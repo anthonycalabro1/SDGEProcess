@@ -442,7 +442,8 @@ button, a, input[type="button"], input[type="submit"] { min-height: 44px; min-wi
             let filteredData = dataToUse;
             if (typeof filterHierarchy === 'function') filteredData = filterHierarchy(dataToUse, window.currentFuelFilter);
             if (typeof updateProcessStatistics === 'function') updateProcessStatistics(filteredData);
-            initTreeVisualization(dataToUse, window.currentFuelFilter);
+            initTreeVisualization(filteredData, null);
+            originalTreeData = dataToUse;
         }
     }
 
@@ -496,6 +497,7 @@ button, a, input[type="button"], input[type="submit"] { min-height: 44px; min-wi
 
     function renderSearchResults(results) {
         const container = document.getElementById('search-results');
+        if (!container) return;
         container.innerHTML = '';
         const displayResults = results.slice(0, 50);
         displayResults.forEach(function(item) {
