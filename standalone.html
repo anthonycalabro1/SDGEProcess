@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDGE AMI 2.0 Process Hierarchy Viewer - Standalone</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://d3js.org/d3.v7.min.js" defer></script>
+    <style>
+/* D3 Tree Visualization Styles */
+.node circle { fill: #fff; stroke: steelblue; stroke-width: 3px; cursor: pointer; }
+.node text { font: 12px sans-serif; }
+.link { fill: none; stroke: #ccc; stroke-width: 2px; }
+.translate-x-full { transform: translateX(100%); }
+.translate-x-0 { transform: translateX(0); }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #555; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border-width: 0; }
+.sr-only:focus { position: static; width: auto; height: auto; padding: inherit; margin: inherit; overflow: visible; clip: auto; white-space: normal; }
+@media (max-width: 768px) { #details-panel { width: 100%; max-width: 100%; } .view-container { padding: 1rem; } }
+button, a, input[type="button"], input[type="submit"] { min-height: 44px; min-width: 44px; }
+*:focus-visible { outline: 2px solid #3b82f6; outline-offset: 2px; }
+.process-modified { border-left-width: 4px; border-left-color: #f59e0b; background-color: #fef3c7; }
+.process-added { border-left-width: 4px; border-left-color: #10b981; background-color: #d1fae5; }
+.process-deleted { opacity: 0.5; text-decoration: line-through; background-color: #fee2e2; border-left-width: 4px; border-left-color: #ef4444; }
+    </style>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col overflow-hidden">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-blue-600 focus:text-white focus:rounded-md">Skip to main content</a>
+
+    <header class="bg-white shadow-md z-30 relative" role="banner">
+        <div class="w-full">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-6 pl-4 sm:pl-6 lg:pl-8">
+                    <h1 class="text-xl font-bold text-gray-800">SDGE AMI 2.0 Process Hierarchy</h1>
+                    <div id="process-statistics" class="hidden md:flex items-center space-x-4 text-sm text-gray-600">
+                        <span id="l1-count" class="font-medium">L1: <span class="text-gray-800">-</span></span>
+                        <span id="l2-count" class="font-medium">L2: <span class="text-gray-800">-</span></span>
+                        <span id="l3-count" class="font-medium">L3: <span class="text-gray-800">-</span></span>
+                        <span id="l4-count" class="font-medium">L4: <span class="text-gray-800">-</span></span>
+                    </div>
+                </div>
+                <div class="flex items-center pr-4 sm:pr-6 lg:pr-8">
+                    <button id="mobile-menu-btn" class="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Toggle navigation menu" aria-expanded="false">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                    <nav class="hidden md:flex items-center space-x-4" role="navigation" aria-label="Main navigation">
+                        <button id="nav-view-btn" class="px-4 py-2 rounded-md text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 min-w-[44px] min-h-[44px]" onclick="switchView('navigation')" aria-label="Switch to Navigation View">Navigation View</button>
+                        <button id="tree-view-btn" class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 min-w-[44px] min-h-[44px]" onclick="switchView('tree')" aria-label="Switch to Tree View">Tree View</button>
+                        <button id="search-view-btn" class="px-4 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 min-w-[44px] min-h-[44px]" onclick="switchView('search')" aria-label="Switch to Search View">Search</button>
+                    </nav>
+                </div>
+            </div>
+            <nav id="mobile-menu" class="hidden md:hidden pb-4 px-4 sm:px-6 lg:px-8" role="navigation" aria-label="Mobile navigation">
+                <div class="flex flex-col space-y-2">
+                    <button class="w-full px-4 py-3 rounded-md text-sm font-medium text-left text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 min-h-[44px]" onclick="switchView('navigation'); toggleMobileMenu();" aria-label="Switch to Navigation View">Navigation View</button>
+                    <button class="w-full px-4 py-3 rounded-md text-sm font-medium text-left text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 min-h-[44px]" onclick="switchView('tree'); toggleMobileMenu();" aria-label="Switch to Tree View">Tree View</button>
+                    <button class="w-full px-4 py-3 rounded-md text-sm font-medium text-left text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 min-h-[44px]" onclick="switchView('search'); toggleMobileMenu();" aria-label="Switch to Search View">Search</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden relative">
+        <main class="flex-1 overflow-auto p-6 relative" id="main-content">
+            <div id="navigation-view" class="view-container h-full">
+                <div class="mb-4">
+                    <div class="flex flex-col md:flex-row md:items-end md:space-x-4 space-y-4 md:space-y-0">
+                        <div class="flex-1 md:flex-initial">
+                            <label for="nav-fuel-filter" class="block text-sm font-medium text-gray-700 mb-2">Filter by Fuel Coverage</label>
+                            <select id="nav-fuel-filter" class="w-full md:w-auto px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 min-h-[44px]" aria-label="Filter processes by Fuel Coverage">
+                                <option value="All">All</option>
+                                <option value="Both">Both</option>
+                                <option value="Electric">Electric</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="breadcrumbs" class="mb-4 flex items-center text-sm text-gray-600"></div>
+                <div id="nav-list" class="flex flex-col space-y-4"></div>
+            </div>
+
+            <div id="tree-view" class="view-container hidden h-full w-full bg-white rounded-lg shadow">
+                <div class="p-4 border-b border-gray-200">
+                    <div class="flex flex-col md:flex-row md:items-end md:space-x-4 space-y-4 md:space-y-0">
+                        <div class="flex-1 md:flex-initial">
+                            <label for="tree-fuel-filter" class="block text-sm font-medium text-gray-700 mb-2">Filter by Fuel Coverage</label>
+                            <select id="tree-fuel-filter" class="w-full md:w-auto px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 min-h-[44px]" aria-label="Filter processes by Fuel Coverage">
+                                <option value="All">All</option>
+                                <option value="Both">Both</option>
+                                <option value="Electric">Electric</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end space-x-2">
+                            <button id="expand-all-btn" onclick="expandAllTreeNodes()" class="px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 min-h-[44px]" aria-label="Expand all tree nodes">Expand All</button>
+                            <button id="collapse-all-btn" onclick="collapseAllTreeNodes()" class="px-4 py-2 rounded-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 min-h-[44px]" aria-label="Collapse all tree nodes">Collapse All</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="tree-container" class="w-full h-full overflow-hidden"></div>
+            </div>
+
+            <div id="search-view" class="view-container hidden h-full">
+                <div class="max-w-3xl mx-auto">
+                    <div class="mb-6">
+                        <label for="search-input" class="sr-only">Search process names</label>
+                        <input type="text" id="search-input" placeholder="Search process names..." class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm min-h-[44px]" aria-label="Search process names">
+                    </div>
+                    <div id="search-results" class="space-y-4"></div>
+                </div>
+            </div>
+        </main>
+
+        <aside id="details-panel" class="w-full md:w-96 lg:w-96 bg-white shadow-xl border-l border-gray-200 transform transition-transform duration-300 ease-in-out translate-x-full absolute right-0 top-0 h-full z-20 overflow-y-auto" role="complementary" aria-label="Process details">
+            <div class="p-4 md:p-6">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-xl font-bold text-gray-900">Process Details</h2>
+                    <button onclick="closeDetails()" class="text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 rounded-md min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Close details panel">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                </div>
+                <div id="details-content" role="region" aria-live="polite"></div>
+            </div>
+        </aside>
+    </div>
+
+    <div id="loading-indicator" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 z-50 flex items-center justify-center" role="status" aria-live="polite" aria-label="Loading">
+        <div class="bg-white p-6 rounded-lg shadow-xl flex items-center space-x-4">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" aria-hidden="true"></div>
+            <span class="text-gray-700 font-medium">Loading...</span>
+        </div>
+    </div>
+
+    <div id="error-message" class="hidden fixed top-4 right-4 max-w-md bg-red-50 border border-red-200 rounded-lg shadow-lg p-4 z-50" role="alert" aria-live="assertive">
+        <div class="flex items-start">
+            <svg class="h-5 w-5 text-red-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+            </svg>
+            <div class="ml-3 flex-1">
+                <h3 class="text-sm font-medium text-red-800">Error</h3>
+                <p id="error-text" class="mt-1 text-sm text-red-700"></p>
+            </div>
+            <button onclick="closeError()" class="ml-4 text-red-600 hover:text-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 rounded min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Close error message">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+        </div>
+    </div>
+
+    <script>
+    // Embedded hierarchy data - loaded from hierarchy-data.json
+    const embeddedHierarchyData = {"name":"Process Hierarchy","children":[{"name":"Enable & Manage AMI Assets","level":"L1","children":[{"name":"Device Lifecycle Management","level":"L2","children":[{"name":"Asset & Inventory Management","level":"L3","children":[{"name":"Procurement & Receiving","level":"L4","id":1,"fuel_coverage":"Both"},{"name":"Sample and Acceptance Testing","level":"L4","id":2,"fuel_coverage":"Both"},{"name":"Track inventory & reconcile counts","level":"L4","id":3,"fuel_coverage":"Both"},{"name":"Register Devices in Asset Management System and Head End","level":"L4","id":4,"fuel_coverage":"Both"},{"name":"RMA Process and Warranty","level":"L4","id":5,"fuel_coverage":"Both"}]},{"name":"Installation & Commissioning","level":"L3","children":[{"name":"Customer Notification of install - Install Related(ME&O Plan)","level":"L4","id":6,"fuel_coverage":"Both"},{"name":"Pre-Install Process - Order Creation","level":"L4","id":7,"fuel_coverage":"Both"},{"name":"During Install","level":"L4","id":8,"fuel_coverage":"Both"},{"name":"Post Install","level":"L4","id":9,"fuel_coverage":"Both"},{"name":"Install Exception Handling - Field","level":"L4","id":10,"fuel_coverage":"Both"},{"name":"Install Exception Handling - Back-Office","level":"L4","id":11,"fuel_coverage":"Both"},{"name":"QA/QC 3rd party installs","level":"L4","id":12,"fuel_coverage":"Both"},{"name":"Asset Return, Retire and Warehousing","level":"L4","id":13,"fuel_coverage":"Both"}]}]},{"name":"Network & Communication","level":"L2","children":[{"name":"Network Management - Cellular","level":"L3","children":[{"name":"Cellular/SIM Lifecycle - Procurement","level":"L4","id":14,"fuel_coverage":"Both"},{"name":"Cellular/SIM Lifecycle - Activation/suspend/terminate flows","level":"L4","id":15,"fuel_coverage":"Both"},{"name":"Cellular/SIM Lifecycle - Carrier Switch","level":"L4","id":16,"fuel_coverage":"Both"},{"name":"Network Troubleshooting and Vendor Escalation Process","level":"L4","id":17,"fuel_coverage":"Both"}]},{"name":"Network Management - Micro Mesh","level":"L3","children":[{"name":"Micromesh Needs Assessment and Network Design","level":"L4","id":18,"fuel_coverage":"Both"},{"name":"Deployment Process","level":"L4","id":19,"fuel_coverage":"Both"},{"name":"Operate & maintain micromesh infrastructure","level":"L4","id":20,"fuel_coverage":"Both"}]}]}]},{"name":"Enable Meter to Cash & Customer Engagement","level":"L1","children":[{"name":"Data Management & Integration","level":"L2","children":[{"name":"Master Data Synchronization","level":"L3","children":[{"name":"Data Synchronization (CIS, MDMS and HES)","level":"L4","id":21,"fuel_coverage":"Both"},{"name":"Data Synchronization Exceptions","level":"L4","id":22,"fuel_coverage":"Both"},{"name":"Data Synchronization - Other Systems - GIS, OMS etc.","level":"L4","id":23,"fuel_coverage":"Both"}]},{"name":"Meter Data Collection & Processing","level":"L3","children":[{"name":"Device Configuration ( Meter Programs)","level":"L4","id":24,"fuel_coverage":"Both"},{"name":"Usage Data Collection (Reads and Intervals)","level":"L4","id":25,"fuel_coverage":"Both"},{"name":"Non-usage Data Collection (Voltage, Events etc. )","level":"L4","id":26,"fuel_coverage":"Electric"},{"name":"VEE Configuration","level":"L4","id":27,"fuel_coverage":"Both"},{"name":"VEE Exception Management","level":"L4","id":28,"fuel_coverage":"Both"},{"name":"Pended Data Processing","level":"L4","id":29,"fuel_coverage":"Both"}]}]},{"name":"Customer & Billing Management","level":"L2","children":[{"name":"Billing & Settlement Management","level":"L3","children":[{"name":"Simple Billing Rates (Register reads)","level":"L4","id":30,"fuel_coverage":"Both"},{"name":"Complex Rates (TOU, Demand Rates, Net Billing, Co-incident Demand)","level":"L4","id":31,"fuel_coverage":"Electric"},{"name":"Off cycle Billing - Simple","level":"L4","id":32,"fuel_coverage":"Both"},{"name":"Off cycle Billing - Complex","level":"L4","id":33,"fuel_coverage":"Electric"},{"name":"Billing Exception Resolution (All Rates)","level":"L4","id":34,"fuel_coverage":"Both"},{"name":"Wholesale Settlement","level":"L4","id":35,"fuel_coverage":"Both"}]},{"name":"Specialized Billing","level":"L3","children":[{"name":"Event based billing","level":"L4","id":36,"fuel_coverage":"Electric"},{"name":"Totalized Metering","level":"L4","id":37,"fuel_coverage":"Electric"},{"name":"Virtual Totalized Metering","level":"L4","id":38,"fuel_coverage":"Electric"}]}]},{"name":"Customer Management","level":"L2","children":[{"name":"Customer Engagement","level":"L3","children":[{"name":"Opt-Out Management (Existing, Pre install, During Install, Post Install)","level":"L4","id":39,"fuel_coverage":"Both"},{"name":"Customer Portal (Usage Data)","level":"L4","id":40,"fuel_coverage":"Both"},{"name":"3rd Party data Access","level":"L4","id":41,"fuel_coverage":"Both"}]}]}]},{"name":"Manage AMI Data & Operations","level":"L1","children":[{"name":"Data Management & Integration","level":"L2","children":[{"name":"AMI Existing Capabilities/Integrations","level":"L3","children":[{"name":"NMS Integration - Outage Events, Power Status Checks","level":"L4","id":42,"fuel_coverage":"Electric"},{"name":"DataMart / Data Lake integration","level":"L4","id":43,"fuel_coverage":"Both"},{"name":"Revenue Protection Management - Theft and Tamper Alerts Management","level":"L4","id":44,"fuel_coverage":"Electric"},{"name":"DERMS Programs Enrollment and Re-conciliation","level":"L4","id":45,"fuel_coverage":"Electric"},{"name":"Rate Compare Tool Update","level":"L4","id":46,"fuel_coverage":"Both"},{"name":"AMI Event Analysis and Response","level":"L4","id":47,"fuel_coverage":"Electric"},{"name":"Load Forecasting","level":"L4","id":48,"fuel_coverage":"Both"}]},{"name":"Interim Parallel Processing","level":"L3","children":[{"name":"Billing Operations","level":"L4","id":49,"fuel_coverage":"Both"},{"name":"Data Sync","level":"L4","id":50,"fuel_coverage":"Both"},{"name":"RCD Processing","level":"L4","id":51,"fuel_coverage":"Electric"},{"name":"NMS Integration - Meter Pings, Outage Events","level":"L4","id":52,"fuel_coverage":"Electric"}]},{"name":"Reporting, Data Quality & Governance","level":"L3","children":[{"name":"Program Reporting Needs - Deployment volume, Exceptions, Saturation etc.","level":"L4","id":53,"fuel_coverage":"Both"},{"name":"BAU Reporting Needs - Read Rates, Transaction success, Events etc.","level":"L4","id":54,"fuel_coverage":"Both"},{"name":"Cross System Anomalies","level":"L4","id":55,"fuel_coverage":"Both"}]},{"name":"Supplier Data Requirements","level":"L3","children":[{"name":"CCA Integration","level":"L4","id":56,"fuel_coverage":"Both"}]}]},{"name":"Meter Maintenance and Field operations","level":"L2","children":[{"name":"Meter Operations and Diagnostics","level":"L3","children":[{"name":"Remote Firmware Update","level":"L4","id":57,"fuel_coverage":"Both"},{"name":"Manage Meter Configurations","level":"L4","id":58,"fuel_coverage":"Electric"},{"name":"Manage Security certificates","level":"L4","id":59,"fuel_coverage":"Both"},{"name":"Time Sync/Meter Clock Management","level":"L4","id":60,"fuel_coverage":"Both"},{"name":"Device Data Wipe Procedure","level":"L4","id":61,"fuel_coverage":"Both"},{"name":"Remote Diagnostics","level":"L4","id":62,"fuel_coverage":"Both"}]}]}]},{"name":"Manage AMI transaction & Field Enablement","level":"L1","children":[{"name":"Meter Maintenance and Field operations","level":"L2","children":[{"name":"Meter /Module Field Operations (BAU)","level":"L3","children":[{"name":"New Install","level":"L4","id":63,"fuel_coverage":"Both"},{"name":"Meter Exchange","level":"L4","id":64,"fuel_coverage":"Both"},{"name":"RCD - Move in /Move outs","level":"L4","id":65,"fuel_coverage":"Electric"},{"name":"RCD - Collection Process","level":"L4","id":66,"fuel_coverage":"Electric"},{"name":"RCD - Emergency","level":"L4","id":67,"fuel_coverage":"Electric"},{"name":"Field Investigations","level":"L4","id":68,"fuel_coverage":"Electric"},{"name":"Meter Sample Testing","level":"L4","id":69,"fuel_coverage":"Electric"}]}]}]},{"name":"Optimize the Grid & Innovate","level":"L1","children":[{"name":"Advanced Capabilities - Customer","level":"L2","children":[{"name":"NextGen Capabilities - Customer","level":"L3","children":[{"name":"DI App Management","level":"L4","id":70,"fuel_coverage":"Electric"},{"name":"Load Disaggregation Enrollment & Provisioning","level":"L4","id":71,"fuel_coverage":"Electric"},{"name":"Load Disaggregation Enablement","level":"L4","id":72,"fuel_coverage":"Electric"}]}]},{"name":"Advanced Capabilities - Grid","level":"L2","children":[{"name":"NextGen Capabilities - Grid Operations","level":"L3","children":[{"name":"Transformer Load Management - Phase Identification","level":"L4","id":73,"fuel_coverage":"Electric"},{"name":"Transformer Load Management - Transformer to Meter Mapping","level":"L4","id":74,"fuel_coverage":"Electric"},{"name":"Transformer Load Management - Transformer Load Management","level":"L4","id":75,"fuel_coverage":"Electric"}]}]}]}]};
+    </script>
+    <script>
+    // Embedded search index - loaded from search-index.json
+    const embeddedSearchIndex = [{"name":"Enable & Manage AMI Assets","level":"L1","path":"Enable & Manage AMI Assets","parent":""},{"name":"Device Lifecycle Management","level":"L2","path":"Enable & Manage AMI Assets > Device Lifecycle Management","parent":"Enable & Manage AMI Assets"},{"name":"Asset & Inventory Management","level":"L3","path":"Enable & Manage AMI Assets > Device Lifecycle Management > Asset & Inventory Management","parent":"Device Lifecycle Management"},{"name":"Procurement & Receiving","level":"L4","path":"Enable & Manage AMI Assets > Device Lifecycle Management > Asset & Inventory Management > Procurement & Receiving","parent":"Asset & Inventory Management","id":1,"fuel_coverage":"Both"},{"name":"Sample and Acceptance Testing","level":"L4","path":"Enable & Manage AMI Assets > Device Lifecycle Management > Asset & Inventory Management > Sample and Acceptance Testing","parent":"Asset & Inventory Management","id":2,"fuel_coverage":"Both"},{"name":"Track inventory & reconcile counts","level":"L4","path":"Enable & Manage AMI Assets > Device Lifecycle Management > Asset & Inventory Management > Track inventory & reconcile counts","parent":"Asset & Inventory Management","id":3,"fuel_coverage":"Both"},{"name":"Register Devices in Asset Management System and Head End","level":"L4","path":"Enable & Manage AMI Assets > Device Lifecycle Management > Asset & Inventory Management > Register Devices in Asset Management System and Head End","parent":"Asset & Inventory Management","id":4,"fuel_coverage":"Both"},{"name":"RMA Process and Warranty","level":"L4","path":"Enable & Manage AMI Assets > Device Lifecycle Management > Asset & Inventory Management > RMA Process and Warranty","parent":"Asset & Inventory Management","id":5,"fuel_coverage":"Both"},{"name":"Installation & Commissioning","level":"L3","path":"Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning","parent":"Device Lifecycle Management"},{"name":"Customer Notification of install - Install Related(ME&O Plan)","level":"L4","path":"Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > Customer Notification of install - Install Related(ME&O Plan)","parent":"Installation & Commissioning","id":6,"fuel_coverage":"Both"},{"name":"Pre-Install Process - Order Creation","level":"L4","path":"Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > Pre-Install Process - Order Creation","parent":"Installation & Commissioning","id":7,"fuel_coverage":"Both"},{"name":"During Install","level":"L4","path":"Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > During Install","parent":"Installation & Commissioning","id":8,"fuel_coverage":"Both"},{"name":"Post Install","level":"L4","path":"Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > Post Install","parent":"Installation & Commissioning","id":9,"fuel_coverage":"Both"},{"name":"Install Exception Handling - Field","level":"L4","path":"Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > Install Exception Handling - Field","parent":"Installation & Commissioning","id":10,"fuel_coverage":"Both"},{"name":"Install Exception Handling - Back-Office","level":"L4","path":"Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > Install Exception Handling - Back-Office","parent":"Installation & Commissioning","id":11,"fuel_coverage":"Both"},{"name":"QA/QC 3rd party installs","level":"L4","path":"Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > QA/QC 3rd party installs","parent":"Installation & Commissioning","id":12,"fuel_coverage":"Both"},{"name":"Asset Return, Retire and Warehousing","level":"L4","path":"Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > Asset Return, Retire and Warehousing","parent":"Installation & Commissioning","id":13,"fuel_coverage":"Both"},{"name":"Network & Communication","level":"L2","path":"Enable & Manage AMI Assets > Network & Communication","parent":"Enable & Manage AMI Assets"},{"name":"Network Management - Cellular","level":"L3","path":"Enable & Manage AMI Assets > Network & Communication > Network Management - Cellular","parent":"Network & Communication"},{"name":"Cellular/SIM Lifecycle - Procurement","level":"L4","path":"Enable & Manage AMI Assets > Network & Communication > Network Management - Cellular > Cellular/SIM Lifecycle - Procurement","parent":"Network Management - Cellular","id":14,"fuel_coverage":"Both"},{"name":"Cellular/SIM Lifecycle - Activation/suspend/terminate flows","level":"L4","path":"Enable & Manage AMI Assets > Network & Communication > Network Management - Cellular > Cellular/SIM Lifecycle - Activation/suspend/terminate flows","parent":"Network Management - Cellular","id":15,"fuel_coverage":"Both"},{"name":"Cellular/SIM Lifecycle - Carrier Switch","level":"L4","path":"Enable & Manage AMI Assets > Network & Communication > Network Management - Cellular > Cellular/SIM Lifecycle - Carrier Switch","parent":"Network Management - Cellular","id":16,"fuel_coverage":"Both"},{"name":"Network Troubleshooting and Vendor Escalation Process","level":"L4","path":"Enable & Manage AMI Assets > Network & Communication > Network Management - Cellular > Network Troubleshooting and Vendor Escalation Process","parent":"Network Management - Cellular","id":17,"fuel_coverage":"Both"},{"name":"Network Management - Micro Mesh","level":"L3","path":"Enable & Manage AMI Assets > Network & Communication > Network Management - Micro Mesh","parent":"Network & Communication"},{"name":"Micromesh Needs Assessment and Network Design","level":"L4","path":"Enable & Manage AMI Assets > Network & Communication > Network Management - Micro Mesh > Micromesh Needs Assessment and Network Design","parent":"Network Management - Micro Mesh","id":18,"fuel_coverage":"Both"},{"name":"Deployment Process","level":"L4","path":"Enable & Manage AMI Assets > Network & Communication > Network Management - Micro Mesh > Deployment Process","parent":"Network Management - Micro Mesh","id":19,"fuel_coverage":"Both"},{"name":"Operate & maintain micromesh infrastructure","level":"L4","path":"Enable & Manage AMI Assets > Network & Communication > Network Management - Micro Mesh > Operate & maintain micromesh infrastructure","parent":"Network Management - Micro Mesh","id":20,"fuel_coverage":"Both"},{"name":"Enable Meter to Cash & Customer Engagement","level":"L1","path":"Enable Meter to Cash & Customer Engagement","parent":""},{"name":"Data Management & Integration","level":"L2","path":"Enable Meter to Cash & Customer Engagement > Data Management & Integration","parent":"Enable Meter to Cash & Customer Engagement"},{"name":"Master Data Synchronization","level":"L3","path":"Enable Meter to Cash & Customer Engagement > Data Management & Integration > Master Data Synchronization","parent":"Data Management & Integration"},{"name":"Data Synchronization (CIS, MDMS and HES)","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Data Management & Integration > Master Data Synchronization > Data Synchronization (CIS, MDMS and HES)","parent":"Master Data Synchronization","id":21,"fuel_coverage":"Both"},{"name":"Data Synchronization Exceptions","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Data Management & Integration > Master Data Synchronization > Data Synchronization Exceptions","parent":"Master Data Synchronization","id":22,"fuel_coverage":"Both"},{"name":"Data Synchronization - Other Systems - GIS, OMS etc.","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Data Management & Integration > Master Data Synchronization > Data Synchronization - Other Systems - GIS, OMS etc.","parent":"Master Data Synchronization","id":23,"fuel_coverage":"Both"},{"name":"Meter Data Collection & Processing","level":"L3","path":"Enable Meter to Cash & Customer Engagement > Data Management & Integration > Meter Data Collection & Processing","parent":"Data Management & Integration"},{"name":"Device Configuration ( Meter Programs)","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Data Management & Integration > Meter Data Collection & Processing > Device Configuration ( Meter Programs)","parent":"Meter Data Collection & Processing","id":24,"fuel_coverage":"Both"},{"name":"Usage Data Collection (Reads and Intervals)","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Data Management & Integration > Meter Data Collection & Processing > Usage Data Collection (Reads and Intervals)","parent":"Meter Data Collection & Processing","id":25,"fuel_coverage":"Both"},{"name":"Non-usage Data Collection (Voltage, Events etc. )","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Data Management & Integration > Meter Data Collection & Processing > Non-usage Data Collection (Voltage, Events etc. )","parent":"Meter Data Collection & Processing","id":26,"fuel_coverage":"Electric"},{"name":"VEE Configuration","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Data Management & Integration > Meter Data Collection & Processing > VEE Configuration","parent":"Meter Data Collection & Processing","id":27,"fuel_coverage":"Both"},{"name":"VEE Exception Management","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Data Management & Integration > Meter Data Collection & Processing > VEE Exception Management","parent":"Meter Data Collection & Processing","id":28,"fuel_coverage":"Both"},{"name":"Pended Data Processing","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Data Management & Integration > Meter Data Collection & Processing > Pended Data Processing","parent":"Meter Data Collection & Processing","id":29,"fuel_coverage":"Both"},{"name":"Customer & Billing Management","level":"L2","path":"Enable Meter to Cash & Customer Engagement > Customer & Billing Management","parent":"Enable Meter to Cash & Customer Engagement"},{"name":"Billing & Settlement Management","level":"L3","path":"Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Billing & Settlement Management","parent":"Customer & Billing Management"},{"name":"Simple Billing Rates (Register reads)","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Billing & Settlement Management > Simple Billing Rates (Register reads)","parent":"Billing & Settlement Management","id":30,"fuel_coverage":"Both"},{"name":"Complex Rates (TOU, Demand Rates, Net Billing, Co-incident Demand)","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Billing & Settlement Management > Complex Rates (TOU, Demand Rates, Net Billing, Co-incident Demand)","parent":"Billing & Settlement Management","id":31,"fuel_coverage":"Electric"},{"name":"Off cycle Billing - Simple","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Billing & Settlement Management > Off cycle Billing - Simple","parent":"Billing & Settlement Management","id":32,"fuel_coverage":"Both"},{"name":"Off cycle Billing - Complex","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Billing & Settlement Management > Off cycle Billing - Complex","parent":"Billing & Settlement Management","id":33,"fuel_coverage":"Electric"},{"name":"Billing Exception Resolution (All Rates)","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Billing & Settlement Management > Billing Exception Resolution (All Rates)","parent":"Billing & Settlement Management","id":34,"fuel_coverage":"Both"},{"name":"Wholesale Settlement","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Billing & Settlement Management > Wholesale Settlement","parent":"Billing & Settlement Management","id":35,"fuel_coverage":"Both"},{"name":"Specialized Billing","level":"L3","path":"Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Specialized Billing","parent":"Customer & Billing Management"},{"name":"Event based billing","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Specialized Billing > Event based billing","parent":"Specialized Billing","id":36,"fuel_coverage":"Electric"},{"name":"Totalized Metering","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Specialized Billing > Totalized Metering","parent":"Specialized Billing","id":37,"fuel_coverage":"Electric"},{"name":"Virtual Totalized Metering","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Specialized Billing > Virtual Totalized Metering","parent":"Specialized Billing","id":38,"fuel_coverage":"Electric"},{"name":"Customer Management","level":"L2","path":"Enable Meter to Cash & Customer Engagement > Customer Management","parent":"Enable Meter to Cash & Customer Engagement"},{"name":"Customer Engagement","level":"L3","path":"Enable Meter to Cash & Customer Engagement > Customer Management > Customer Engagement","parent":"Customer Management"},{"name":"Opt-Out Management (Existing, Pre install, During Install, Post Install)","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Customer Management > Customer Engagement > Opt-Out Management (Existing, Pre install, During Install, Post Install)","parent":"Customer Engagement","id":39,"fuel_coverage":"Both"},{"name":"Customer Portal (Usage Data)","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Customer Management > Customer Engagement > Customer Portal (Usage Data)","parent":"Customer Engagement","id":40,"fuel_coverage":"Both"},{"name":"3rd Party data Access","level":"L4","path":"Enable Meter to Cash & Customer Engagement > Customer Management > Customer Engagement > 3rd Party data Access","parent":"Customer Engagement","id":41,"fuel_coverage":"Both"},{"name":"Manage AMI Data & Operations","level":"L1","path":"Manage AMI Data & Operations","parent":""},{"name":"Data Management & Integration","level":"L2","path":"Manage AMI Data & Operations > Data Management & Integration","parent":"Manage AMI Data & Operations"},{"name":"AMI Existing Capabilities/Integrations","level":"L3","path":"Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations","parent":"Data Management & Integration"},{"name":"NMS Integration - Outage Events, Power Status Checks","level":"L4","path":"Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations > NMS Integration - Outage Events, Power Status Checks","parent":"AMI Existing Capabilities/Integrations","id":42,"fuel_coverage":"Electric"},{"name":"DataMart / Data Lake integration","level":"L4","path":"Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations > DataMart / Data Lake integration","parent":"AMI Existing Capabilities/Integrations","id":43,"fuel_coverage":"Both"},{"name":"Revenue Protection Management - Theft and Tamper Alerts Management","level":"L4","path":"Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations > Revenue Protection Management - Theft and Tamper Alerts Management","parent":"AMI Existing Capabilities/Integrations","id":44,"fuel_coverage":"Electric"},{"name":"DERMS Programs Enrollment and Re-conciliation","level":"L4","path":"Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations > DERMS Programs Enrollment and Re-conciliation","parent":"AMI Existing Capabilities/Integrations","id":45,"fuel_coverage":"Electric"},{"name":"Rate Compare Tool Update","level":"L4","path":"Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations > Rate Compare Tool Update","parent":"AMI Existing Capabilities/Integrations","id":46,"fuel_coverage":"Both"},{"name":"AMI Event Analysis and Response","level":"L4","path":"Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations > AMI Event Analysis and Response","parent":"AMI Existing Capabilities/Integrations","id":47,"fuel_coverage":"Electric"},{"name":"Load Forecasting","level":"L4","path":"Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations > Load Forecasting","parent":"AMI Existing Capabilities/Integrations","id":48,"fuel_coverage":"Both"},{"name":"Interim Parallel Processing","level":"L3","path":"Manage AMI Data & Operations > Data Management & Integration > Interim Parallel Processing","parent":"Data Management & Integration"},{"name":"Billing Operations","level":"L4","path":"Manage AMI Data & Operations > Data Management & Integration > Interim Parallel Processing > Billing Operations","parent":"Interim Parallel Processing","id":49,"fuel_coverage":"Both"},{"name":"Data Sync","level":"L4","path":"Manage AMI Data & Operations > Data Management & Integration > Interim Parallel Processing > Data Sync","parent":"Interim Parallel Processing","id":50,"fuel_coverage":"Both"},{"name":"RCD Processing","level":"L4","path":"Manage AMI Data & Operations > Data Management & Integration > Interim Parallel Processing > RCD Processing","parent":"Interim Parallel Processing","id":51,"fuel_coverage":"Electric"},{"name":"NMS Integration - Meter Pings, Outage Events","level":"L4","path":"Manage AMI Data & Operations > Data Management & Integration > Interim Parallel Processing > NMS Integration - Meter Pings, Outage Events","parent":"Interim Parallel Processing","id":52,"fuel_coverage":"Electric"},{"name":"Reporting, Data Quality & Governance","level":"L3","path":"Manage AMI Data & Operations > Data Management & Integration > Reporting, Data Quality & Governance","parent":"Data Management & Integration"},{"name":"Program Reporting Needs - Deployment volume, Exceptions, Saturation etc.","level":"L4","path":"Manage AMI Data & Operations > Data Management & Integration > Reporting, Data Quality & Governance > Program Reporting Needs - Deployment volume, Exceptions, Saturation etc.","parent":"Reporting, Data Quality & Governance","id":53,"fuel_coverage":"Both"},{"name":"BAU Reporting Needs - Read Rates, Transaction success, Events etc.","level":"L4","path":"Manage AMI Data & Operations > Data Management & Integration > Reporting, Data Quality & Governance > BAU Reporting Needs - Read Rates, Transaction success, Events etc.","parent":"Reporting, Data Quality & Governance","id":54,"fuel_coverage":"Both"},{"name":"Cross System Anomalies","level":"L4","path":"Manage AMI Data & Operations > Data Management & Integration > Reporting, Data Quality & Governance > Cross System Anomalies","parent":"Reporting, Data Quality & Governance","id":55,"fuel_coverage":"Both"},{"name":"Supplier Data Requirements","level":"L3","path":"Manage AMI Data & Operations > Data Management & Integration > Supplier Data Requirements","parent":"Data Management & Integration"},{"name":"CCA Integration","level":"L4","path":"Manage AMI Data & Operations > Data Management & Integration > Supplier Data Requirements > CCA Integration","parent":"Supplier Data Requirements","id":56,"fuel_coverage":"Both"},{"name":"Meter Maintenance and Field operations","level":"L2","path":"Manage AMI Data & Operations > Meter Maintenance and Field operations","parent":"Manage AMI Data & Operations"},{"name":"Meter Operations and Diagnostics","level":"L3","path":"Manage AMI Data & Operations > Meter Maintenance and Field operations > Meter Operations and Diagnostics","parent":"Meter Maintenance and Field operations"},{"name":"Remote Firmware Update","level":"L4","path":"Manage AMI Data & Operations > Meter Maintenance and Field operations > Meter Operations and Diagnostics > Remote Firmware Update","parent":"Meter Operations and Diagnostics","id":57,"fuel_coverage":"Both"},{"name":"Manage Meter Configurations","level":"L4","path":"Manage AMI Data & Operations > Meter Maintenance and Field operations > Meter Operations and Diagnostics > Manage Meter Configurations","parent":"Meter Operations and Diagnostics","id":58,"fuel_coverage":"Electric"},{"name":"Manage Security certificates","level":"L4","path":"Manage AMI Data & Operations > Meter Maintenance and Field operations > Meter Operations and Diagnostics > Manage Security certificates","parent":"Meter Operations and Diagnostics","id":59,"fuel_coverage":"Both"},{"name":"Time Sync/Meter Clock Management","level":"L4","path":"Manage AMI Data & Operations > Meter Maintenance and Field operations > Meter Operations and Diagnostics > Time Sync/Meter Clock Management","parent":"Meter Operations and Diagnostics","id":60,"fuel_coverage":"Both"},{"name":"Device Data Wipe Procedure","level":"L4","path":"Manage AMI Data & Operations > Meter Maintenance and Field operations > Meter Operations and Diagnostics > Device Data Wipe Procedure","parent":"Meter Operations and Diagnostics","id":61,"fuel_coverage":"Both"},{"name":"Remote Diagnostics","level":"L4","path":"Manage AMI Data & Operations > Meter Maintenance and Field operations > Meter Operations and Diagnostics > Remote Diagnostics","parent":"Meter Operations and Diagnostics","id":62,"fuel_coverage":"Both"},{"name":"Manage AMI transaction & Field Enablement","level":"L1","path":"Manage AMI transaction & Field Enablement","parent":""},{"name":"Meter Maintenance and Field operations","level":"L2","path":"Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations","parent":"Manage AMI transaction & Field Enablement"},{"name":"Meter /Module Field Operations (BAU)","level":"L3","path":"Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU)","parent":"Meter Maintenance and Field operations"},{"name":"New Install","level":"L4","path":"Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU) > New Install","parent":"Meter /Module Field Operations (BAU)","id":63,"fuel_coverage":"Both"},{"name":"Meter Exchange","level":"L4","path":"Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU) > Meter Exchange","parent":"Meter /Module Field Operations (BAU)","id":64,"fuel_coverage":"Both"},{"name":"RCD - Move in /Move outs","level":"L4","path":"Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU) > RCD - Move in /Move outs","parent":"Meter /Module Field Operations (BAU)","id":65,"fuel_coverage":"Electric"},{"name":"RCD - Collection Process","level":"L4","path":"Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU) > RCD - Collection Process","parent":"Meter /Module Field Operations (BAU)","id":66,"fuel_coverage":"Electric"},{"name":"RCD - Emergency","level":"L4","path":"Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU) > RCD - Emergency","parent":"Meter /Module Field Operations (BAU)","id":67,"fuel_coverage":"Electric"},{"name":"Field Investigations","level":"L4","path":"Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU) > Field Investigations","parent":"Meter /Module Field Operations (BAU)","id":68,"fuel_coverage":"Electric"},{"name":"Meter Sample Testing","level":"L4","path":"Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU) > Meter Sample Testing","parent":"Meter /Module Field Operations (BAU)","id":69,"fuel_coverage":"Electric"},{"name":"Optimize the Grid & Innovate","level":"L1","path":"Optimize the Grid & Innovate","parent":""},{"name":"Advanced Capabilities - Customer","level":"L2","path":"Optimize the Grid & Innovate > Advanced Capabilities - Customer","parent":"Optimize the Grid & Innovate"},{"name":"NextGen Capabilities - Customer","level":"L3","path":"Optimize the Grid & Innovate > Advanced Capabilities - Customer > NextGen Capabilities - Customer","parent":"Advanced Capabilities - Customer"},{"name":"DI App Management","level":"L4","path":"Optimize the Grid & Innovate > Advanced Capabilities - Customer > NextGen Capabilities - Customer > DI App Management","parent":"NextGen Capabilities - Customer","id":70,"fuel_coverage":"Electric"},{"name":"Load Disaggregation Enrollment & Provisioning","level":"L4","path":"Optimize the Grid & Innovate > Advanced Capabilities - Customer > NextGen Capabilities - Customer > Load Disaggregation Enrollment & Provisioning","parent":"NextGen Capabilities - Customer","id":71,"fuel_coverage":"Electric"},{"name":"Load Disaggregation Enablement","level":"L4","path":"Optimize the Grid & Innovate > Advanced Capabilities - Customer > NextGen Capabilities - Customer > Load Disaggregation Enablement","parent":"NextGen Capabilities - Customer","id":72,"fuel_coverage":"Electric"},{"name":"Advanced Capabilities - Grid","level":"L2","path":"Optimize the Grid & Innovate > Advanced Capabilities - Grid","parent":"Optimize the Grid & Innovate"},{"name":"NextGen Capabilities - Grid Operations","level":"L3","path":"Optimize the Grid & Innovate > Advanced Capabilities - Grid > NextGen Capabilities - Grid Operations","parent":"Advanced Capabilities - Grid"},{"name":"Transformer Load Management - Phase Identification","level":"L4","path":"Optimize the Grid & Innovate > Advanced Capabilities - Grid > NextGen Capabilities - Grid Operations > Transformer Load Management - Phase Identification","parent":"NextGen Capabilities - Grid Operations","id":73,"fuel_coverage":"Electric"},{"name":"Transformer Load Management - Transformer to Meter Mapping","level":"L4","path":"Optimize the Grid & Innovate > Advanced Capabilities - Grid > NextGen Capabilities - Grid Operations > Transformer Load Management - Transformer to Meter Mapping","parent":"NextGen Capabilities - Grid Operations","id":74,"fuel_coverage":"Electric"},{"name":"Transformer Load Management - Transformer Load Management","level":"L4","path":"Optimize the Grid & Innovate > Advanced Capabilities - Grid > NextGen Capabilities - Grid Operations > Transformer Load Management - Transformer Load Management","parent":"NextGen Capabilities - Grid Operations","id":75,"fuel_coverage":"Electric"}];
+    </script>
+    <script>
+    // navigation.js (inline for standalone)
+    let currentNavData = null;
+    let navHistory = [];
+    let originalNavData = null;
+
+    function initNavigationView(data, fuelFilter) {
+        originalNavData = data;
+        let filteredData = data;
+        if (typeof filterHierarchy === 'function') filteredData = filterHierarchy(data, fuelFilter);
+        navHistory = [{ name: "All Processes", data: filteredData }];
+        renderNavigationView(filteredData);
+        setupNavFilterListeners();
+    }
+
+    function setupNavFilterListeners() {
+        const fuelFilter = document.getElementById('nav-fuel-filter');
+        if (fuelFilter && fuelFilter.dataset.listenerSetup !== 'true') {
+            fuelFilter.dataset.listenerSetup = 'true';
+            fuelFilter.addEventListener('change', function(e) {
+                const selectedValue = e.target.value;
+                window.currentFuelFilter = selectedValue === 'All' ? null : selectedValue;
+                const treeFuelFilter = document.getElementById('tree-fuel-filter');
+                if (treeFuelFilter) treeFuelFilter.value = selectedValue;
+                applyNavFilters();
+            });
+        }
+    }
+
+    function applyNavFilters() {
+        if (originalNavData && typeof filterHierarchy === 'function') {
+            const filteredData = filterHierarchy(originalNavData, window.currentFuelFilter);
+            if (typeof updateProcessStatistics === 'function') updateProcessStatistics(filteredData);
+            navHistory = [{ name: "All Processes", data: filteredData }];
+            renderNavigationView(filteredData);
+        }
+    }
+
+    function renderNavigationView(nodeData) {
+        currentNavData = nodeData;
+        const container = document.getElementById('nav-list');
+        if (!container) return;
+        container.innerHTML = '';
+        renderBreadcrumbs();
+        if (!nodeData) { container.innerHTML = '<div class="p-4 text-gray-500">No data available.</div>'; return; }
+        if (!nodeData.children) { container.innerHTML = '<div class="p-4 text-gray-500">No child processes found.</div>'; return; }
+        const visibleChildren = nodeData.children || [];
+        if (visibleChildren.length === 0) {
+            let filterMessage = 'No child processes found.';
+            if (window.currentFuelFilter) filterMessage = 'No processes found with Fuel Coverage: ' + window.currentFuelFilter;
+            container.innerHTML = '<div class="p-4 text-gray-500">' + filterMessage + '</div>';
+            return;
+        }
+        visibleChildren.forEach(function(child) {
+            const card = document.createElement('div');
+            let levelClass = '', levelLabel = '';
+            if (child.level === 'L1') { levelClass = 'border-l-4 border-blue-500'; levelLabel = 'Level 1'; }
+            else if (child.level === 'L2') { levelClass = 'border-l-4 border-green-500'; levelLabel = 'Level 2'; }
+            else if (child.level === 'L3') { levelClass = 'border-l-4 border-orange-500'; levelLabel = 'Level 3'; }
+            else if (child.level === 'L4') { levelClass = 'border-l-4 border-purple-500'; levelLabel = 'Level 4'; }
+            let badges = '<span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">' + levelLabel + '</span>';
+            if (child.level === 'L4' && child.fuel_coverage) badges += '<span class="ml-2 px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">' + child.fuel_coverage + '</span>';
+            card.className = 'bg-white p-4 md:p-6 rounded-lg shadow hover:shadow-md transition-shadow cursor-pointer border border-gray-200 ' + levelClass + ' min-h-[60px]';
+            card.setAttribute('role', 'button');
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('aria-label', child.name + ', ' + levelLabel);
+            card.innerHTML = '<div class="flex justify-between items-center"><h3 class="text-lg font-medium text-gray-900">' + child.name + '</h3><div class="flex items-center space-x-2">' + badges + '</div></div>';
+            card.onclick = function() { handleNavClick(child); };
+            card.onkeydown = function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleNavClick(child); } };
+            container.appendChild(card);
+        });
+    }
+
+    function renderBreadcrumbs() {
+        const container = document.getElementById('breadcrumbs');
+        if (!container) return;
+        container.innerHTML = '';
+        container.setAttribute('role', 'navigation');
+        container.setAttribute('aria-label', 'Breadcrumb');
+        navHistory.forEach(function(item, index) {
+            const isLast = index === navHistory.length - 1;
+            if (isLast) {
+                const span = document.createElement('span');
+                span.className = 'font-bold text-gray-800';
+                span.innerText = item.name;
+                span.setAttribute('aria-current', 'page');
+                container.appendChild(span);
+            } else {
+                const link = document.createElement('button');
+                link.className = 'hover:text-blue-600 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 rounded px-1 min-h-[44px]';
+                link.innerText = item.name;
+                link.onclick = function() { navigateToHistory(index); };
+                link.onkeydown = function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); navigateToHistory(index); } };
+                container.appendChild(link);
+                const separator = document.createElement('span');
+                separator.className = 'mx-2 text-gray-400';
+                separator.innerText = '>';
+                container.appendChild(separator);
+            }
+        });
+    }
+
+    function handleNavClick(childNode) {
+        if (childNode.level === 'L4') openDetails(childNode);
+        else { navHistory.push({ name: childNode.name, data: childNode }); renderNavigationView(childNode); }
+    }
+
+    function navigateToHistory(index) { navHistory = navHistory.slice(0, index + 1); renderNavigationView(navHistory[index].data); }
+    </script>
+    <script>
+    // tree-visualization.js (inline for standalone)
+    let originalTreeData = null;
+
+    function initTreeVisualization(data, fuelFilter) {
+        const containerId = "#tree-container";
+        const container = document.querySelector(containerId);
+        originalTreeData = data;
+        d3.select(containerId).selectAll("*").remove();
+        if (!container) return;
+        let filteredData = data;
+        if (typeof filterHierarchy === 'function') filteredData = filterHierarchy(data, fuelFilter);
+        if (!filteredData.children || filteredData.children.length === 0) {
+            let message = 'No processes found.';
+            if (fuelFilter) message = 'No processes found with Fuel Coverage: ' + fuelFilter;
+            container.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">' + message + '</div>';
+            setupTreeFilterListeners();
+            return;
+        }
+        const width = container.clientWidth || 1000;
+        const height = container.clientHeight || 800;
+        const margin = { top: 20, right: 90, bottom: 30, left: 120 };
+        const svg = d3.select(containerId).append("svg").attr("width", width).attr("height", height).attr("viewBox", [0, 0, width, height]);
+        const zoomGroup = svg.append("g");
+        const g = zoomGroup.append("g").attr("transform", "translate(" + margin.left + "," + (height / 2) + ")");
+        const zoom = d3.zoom().scaleExtent([0.1, 4]).on("zoom", function(event) { zoomGroup.attr("transform", event.transform); });
+        svg.call(zoom);
+        let i = 0;
+        const duration = 750;
+        const treeMap = d3.tree().nodeSize([30, 200]);
+        let root = d3.hierarchy(filteredData, function(d) { return d.children; });
+        root.x0 = 0;
+        root.y0 = 0;
+        let selectedNode = root;
+
+        function updateSelection(d) {
+            selectedNode = d;
+            g.selectAll('circle.node').style("stroke", function(n) { return n === d ? "#f59e0b" : "white"; }).style("stroke-width", function(n) { return n === d ? "4px" : "2px"; });
+        }
+
+        d3.select(window).on("keydown.tree", function(event) {
+            if (document.getElementById("tree-view").classList.contains("hidden")) return;
+            if (!selectedNode) selectedNode = root;
+            if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].indexOf(event.key) > -1) event.preventDefault();
+            switch (event.key) {
+                case "ArrowLeft": if (selectedNode.children) { collapse(selectedNode); update(selectedNode); } else if (selectedNode.parent) updateSelection(selectedNode.parent); break;
+                case "ArrowRight": if (selectedNode._children) { selectedNode.children = selectedNode._children; selectedNode._children = null; update(selectedNode); } else if (selectedNode.children) updateSelection(selectedNode.children[0]); break;
+                case "ArrowUp": if (selectedNode.parent) { const sibUp = selectedNode.parent.children; if (sibUp) { const idx = sibUp.indexOf(selectedNode); if (idx > 0) updateSelection(sibUp[idx - 1]); } } break;
+                case "ArrowDown": if (selectedNode.parent) { const sibDown = selectedNode.parent.children; if (sibDown) { const idx = sibDown.indexOf(selectedNode); if (idx < sibDown.length - 1) updateSelection(sibDown[idx + 1]); } } break;
+                case "Enter": openDetails(selectedNode.data); break;
+            }
+        });
+
+        function collapse(d) { if (d.children) { d._children = d.children; d._children.forEach(collapse); d.children = null; } }
+
+        if (root && root.children) root.children.forEach(function(d) { if (d.children && d.children.length > 0) collapse(d); });
+
+        window.focusProcessNode = function(processName) {
+            function findNode(node, name) {
+                if (node.data.name === name) return node;
+                if (node.children) { for (let child of node.children) { const found = findNode(child, name); if (found) return found; } }
+                if (node._children) { for (let child of node._children) { const found = findNode(child, name); if (found) return found; } }
+                return null;
+            }
+            let targetNode = findNode(root, processName);
+            if (!targetNode) return;
+            let current = targetNode;
+            while (current.parent) {
+                if (current.parent._children) { current.parent.children = current.parent._children; current.parent._children = null; }
+                current = current.parent;
+            }
+            update(root);
+            const center = [width / 2, height / 2];
+            const scale = 1.5;
+            const x = -targetNode.y * scale + center[0] - margin.left * scale;
+            const y = (height / 2) * (1 - scale) - (targetNode.x * scale);
+            const transform = d3.zoomIdentity.translate(x, y).scale(scale);
+            svg.transition().duration(750).call(zoom.transform, transform);
+            updateSelection(targetNode);
+            const nodeSelection = g.selectAll('g.node').filter(function(d) { return d.data.name === processName; });
+            nodeSelection.select('circle').transition().duration(500).style("fill", "#ff0").attr("r", 12).transition().duration(500).style("fill", function(d) { return getNodeColor(d); }).attr("r", 8);
+        };
+
+        function getNodeColor(d) {
+            if (d.data.level === 'L1') return d._children ? "#1d4ed8" : "#3b82f6";
+            if (d.data.level === 'L2') return d._children ? "#15803d" : "#22c55e";
+            if (d.data.level === 'L3') return "#f97316";
+            if (d.data.level === 'L4') return "#a855f7";
+            return "#555";
+        }
+
+        update(root);
+
+        function update(source) {
+            const treeData = treeMap(root);
+            const nodes = treeData.descendants();
+            const links = treeData.descendants().slice(1);
+
+            nodes.forEach(function(d) {
+                if (d.depth === 0) d.y = 0;
+                else if (d.depth === 1) d.y = 200;
+                else if (d.depth === 2) d.y = 450;
+                else if (d.depth === 3) d.y = 750;
+                else if (d.depth === 4) d.y = 1050;
+                else d.y = 1050 + (d.depth - 4) * 300;
+            });
+
+            const node = g.selectAll('g.node').data(nodes, function(d) { return d.id || (d.id = ++i); });
+            const nodeEnter = node.enter().append('g').attr('class', 'node').attr("transform", "translate(" + source.y0 + "," + source.x0 + ")").on('click', click);
+            nodeEnter.append('circle').attr('class', 'node').attr('r', 1e-6).style("fill", function(d) { return getNodeColor(d); }).style("stroke", "white").style("stroke-width", "2px");
+            nodeEnter.append('text').attr("dy", ".35em").attr("x", function(d) { return d.depth === 0 ? -13 : 13; }).attr("text-anchor", function(d) { return d.depth === 0 ? "end" : "start"; }).text(function(d) { return d.data.name; }).style("font-size", "12px").style("fill-opacity", 1e-6).style("cursor", "pointer").style("fill", "#000").clone(true).lower().attr("stroke", "white").attr("stroke-width", 3);
+
+            const nodeUpdate = nodeEnter.merge(node);
+            nodeUpdate.transition().duration(duration).attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; });
+            nodeUpdate.select('circle.node').attr('r', 8).style("fill", function(d) { return getNodeColor(d); }).style("stroke", "white").style("stroke-width", "2px");
+            nodeUpdate.selectAll('text').style("fill-opacity", 1).style("fill", "#000");
+
+            const nodeExit = node.exit().transition().duration(duration).attr("transform", function(d) { return "translate(" + source.y + "," + source.x + ")"; }).remove();
+            nodeExit.select('circle').attr('r', 1e-6);
+            nodeExit.select('text').style('fill-opacity', 1e-6);
+
+            const link = g.selectAll('path.link').data(links, function(d) { return d.id; });
+            const linkEnter = link.enter().insert('path', "g").attr("class", "link").attr("fill", "none").attr("stroke", "#ccc").attr("stroke-width", "1.5px").attr('d', function(d) { var o = { x: source.x0, y: source.y0 }; return diagonal(o, o); });
+            const linkUpdate = linkEnter.merge(link);
+            linkUpdate.transition().duration(duration).attr('d', function(d) { return diagonal(d, d.parent); });
+            link.exit().transition().duration(duration).attr('d', function(d) { var o = { x: source.x, y: source.y }; return diagonal(o, o); }).remove();
+
+            nodes.forEach(function(d) { d.x0 = d.x; d.y0 = d.y; });
+
+            function diagonal(s, d) { return "M " + s.y + " " + s.x + " C " + (s.y + d.y) / 2 + " " + s.x + ", " + (s.y + d.y) / 2 + " " + d.x + ", " + d.y + " " + d.x; }
+
+            function click(event, d) {
+                updateSelection(d);
+                const isLeaf = d.data.level === 'L4' || (!d.children && !d._children);
+                if (isLeaf) openDetails(d.data);
+                else {
+                    if (d.children) { d._children = d.children; d._children.forEach(collapse); d.children = null; }
+                    else { d.children = d._children; d._children = null; }
+                }
+                update(d);
+                event.stopPropagation();
+                if (!isLeaf) {
+                    const scale = d3.zoomTransform(svg.node()).k;
+                    const targetX = (width * 0.25) - (margin.left * scale) - (d.y * scale);
+                    const targetY = (height / 2) * (1 - scale) - (d.x * scale);
+                    svg.transition().duration(750).call(zoom.transform, d3.zoomIdentity.translate(targetX, targetY).scale(scale));
+                }
+            }
+        }
+
+        window.treeRoot = root;
+        window.treeUpdate = update;
+        setupTreeFilterListeners();
+    }
+
+    function setupTreeFilterListeners() {
+        const fuelFilter = document.getElementById('tree-fuel-filter');
+        if (fuelFilter && fuelFilter.dataset.listenerSetup !== 'true') {
+            fuelFilter.dataset.listenerSetup = 'true';
+            fuelFilter.addEventListener('change', function(e) {
+                const selectedValue = e.target.value;
+                window.currentFuelFilter = selectedValue === 'All' ? null : selectedValue;
+                const navFuelFilter = document.getElementById('nav-fuel-filter');
+                if (navFuelFilter) navFuelFilter.value = selectedValue;
+                applyTreeFilters();
+            });
+        }
+    }
+
+    function applyTreeFilters() {
+        if (originalTreeData || window.hierarchyData) {
+            const dataToUse = originalTreeData || window.hierarchyData;
+            let filteredData = dataToUse;
+            if (typeof filterHierarchy === 'function') filteredData = filterHierarchy(dataToUse, window.currentFuelFilter);
+            if (typeof updateProcessStatistics === 'function') updateProcessStatistics(filteredData);
+            initTreeVisualization(dataToUse, window.currentFuelFilter);
+        }
+    }
+
+    window.expandAllTreeNodes = function() {
+        if (!window.treeRoot || !window.treeUpdate) return;
+        function expandNode(node) { if (node._children) { node.children = node._children; node._children = null; } if (node.children) node.children.forEach(expandNode); }
+        if (window.treeRoot.children) window.treeRoot.children.forEach(expandNode);
+        window.treeUpdate(window.treeRoot);
+    };
+
+    window.collapseAllTreeNodes = function() {
+        if (!window.treeRoot || !window.treeUpdate) return;
+        function collapseNode(node) { if (node.children) { node._children = node.children; node._children.forEach(collapseNode); node.children = null; } }
+        if (window.treeRoot.children) window.treeRoot.children.forEach(collapseNode);
+        window.treeUpdate(window.treeRoot);
+    };
+    </script>
+    <script>
+    // search.js (inline for standalone)
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) searchInput.addEventListener('input', function(e) { handleSearch(e.target.value); });
+    });
+
+    function initSearchView(hierarchyData) {
+        const resultsContainer = document.getElementById('search-results');
+        if (resultsContainer) resultsContainer.innerHTML = '';
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) setTimeout(function() { searchInput.focus(); }, 100);
+    }
+
+    function refreshSearchView(hierarchyData) {
+        const searchInput = document.getElementById('search-input');
+        if (searchInput && searchInput.value && searchInput.value.length >= 2) handleSearch(searchInput.value);
+        else { const resultsContainer = document.getElementById('search-results'); if (resultsContainer) resultsContainer.innerHTML = ''; }
+    }
+    window.initSearchView = initSearchView;
+    window.refreshSearchView = refreshSearchView;
+
+    function handleSearch(query) {
+        const resultsContainer = document.getElementById('search-results');
+        if (!query || query.length < 2) { resultsContainer.innerHTML = ''; return; }
+        const lowerQuery = query.toLowerCase();
+        const results = searchIndex.filter(function(item) {
+            if (item.name && item.name.toLowerCase().includes(lowerQuery)) return true;
+            if (item.path && item.path.toLowerCase().includes(lowerQuery)) return true;
+            return false;
+        });
+        renderSearchResults(results);
+    }
+
+    function renderSearchResults(results) {
+        const container = document.getElementById('search-results');
+        container.innerHTML = '';
+        const displayResults = results.slice(0, 50);
+        displayResults.forEach(function(item) {
+            const div = document.createElement('div');
+            let badgeColor = 'bg-gray-100 text-gray-800';
+            if (item.level === 'L1') badgeColor = 'bg-blue-100 text-blue-800';
+            if (item.level === 'L2') badgeColor = 'bg-green-100 text-green-800';
+            if (item.level === 'L3') badgeColor = 'bg-orange-100 text-orange-800';
+            if (item.level === 'L4') badgeColor = 'bg-purple-100 text-purple-800';
+            let badges = '<span class="px-2 py-0.5 text-xs rounded-full ' + badgeColor + '">' + item.level + '</span>';
+            if (item.level === 'L4' && item.fuel_coverage) badges += '<span class="ml-2 px-2 py-0.5 text-xs bg-gray-100 text-gray-700 rounded">' + item.fuel_coverage + '</span>';
+            let content = '<div><div class="flex items-center space-x-2"><h4 class="font-medium text-gray-900">' + item.name + '</h4>' + badges + '</div><div class="text-xs text-gray-500 mt-1">' + (item.path || item.name) + '</div></div><div class="ml-4 flex-shrink-0 self-center"><button onclick="event.stopPropagation(); locateProcess(\'' + item.name.replace(/'/g, "\\'") + '\')" class="p-2 text-gray-400 hover:text-blue-600 rounded-full hover:bg-blue-50 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Locate in hierarchy" title="Locate in Hierarchy"><svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg></button></div>';
+            div.className = 'bg-white p-4 rounded-lg shadow border border-gray-200 hover:bg-gray-50 cursor-pointer flex justify-between items-start';
+            div.innerHTML = content;
+            const processData = { name: item.name, level: item.level, parent: item.parent, path: item.path };
+            if (item.level === 'L4') { processData.id = item.id; processData.fuel_coverage = item.fuel_coverage || 'Both'; }
+            div.onclick = function() { openDetails(processData); };
+            container.appendChild(div);
+        });
+        if (displayResults.length === 0) container.innerHTML = '<div class="text-gray-500 italic">No matching processes found.</div>';
+    }
+    </script>
+    <script>
+    // Modified app.js - uses embedded data for standalone use
+    window.hierarchyData = null;
+    window.searchIndex = null;
+    let currentView = 'navigation';
+    window.currentFuelFilter = null;
+
+    function showLoading() { const indicator = document.getElementById('loading-indicator'); if (indicator) indicator.classList.remove('hidden'); }
+    function hideLoading() { const indicator = document.getElementById('loading-indicator'); if (indicator) indicator.classList.add('hidden'); }
+    function showError(message) { const errorDiv = document.getElementById('error-message'); const errorText = document.getElementById('error-text'); if (errorDiv && errorText) { errorText.textContent = message; errorDiv.classList.remove('hidden'); setTimeout(() => closeError(), 5000); } }
+    function closeError() { const errorDiv = document.getElementById('error-message'); if (errorDiv) errorDiv.classList.add('hidden'); }
+    function toggleMobileMenu() { const menu = document.getElementById('mobile-menu'); const button = document.getElementById('mobile-menu-btn'); if (menu && button) { const isHidden = menu.classList.contains('hidden'); menu.classList.toggle('hidden'); button.setAttribute('aria-expanded', isHidden ? 'true' : 'false'); } }
+    window.toggleMobileMenu = toggleMobileMenu;
+
+    function filterHierarchyByFuelCoverage(data, fuelValue) {
+        if (!fuelValue || fuelValue === 'All' || fuelValue === '') return data;
+        function filterNode(node) {
+            const filteredNode = { ...node };
+            if (node.level === 'L4') { const fuel = node.fuel_coverage || 'Both'; return fuel === fuelValue ? filteredNode : null; }
+            if (node.children && node.children.length > 0) {
+                const filteredChildren = node.children.map(child => filterNode(child)).filter(child => child !== null);
+                if (filteredChildren.length > 0) { filteredNode.children = filteredChildren; return filteredNode; }
+            }
+            return null;
+        }
+        const filteredData = filterNode(data);
+        if (!filteredData || !filteredData.children || filteredData.children.length === 0) return { name: data.name || "Process Hierarchy", children: [] };
+        return filteredData;
+    }
+    function filterHierarchy(data, fuelValue) { return filterHierarchyByFuelCoverage(data, fuelValue); }
+
+    function countProcesses(data) {
+        let l1Count = 0, l2Count = 0, l3Count = 0, l4Count = 0;
+        function countNode(node) {
+            if (node.level === 'L1') { l1Count++; (node.children || []).forEach(countNode); }
+            else if (node.level === 'L2') { l2Count++; (node.children || []).forEach(countNode); }
+            else if (node.level === 'L3') { l3Count++; (node.children || []).forEach(countNode); }
+            else if (node.level === 'L4') l4Count++;
+        }
+        if (data && data.children) data.children.forEach(countNode);
+        return { l1Count, l2Count, l3Count, l4Count };
+    }
+    function updateProcessStatistics(data) {
+        const counts = countProcesses(data);
+        ['l1', 'l2', 'l3', 'l4'].forEach(level => { const el = document.getElementById(level + '-count'); if (el && el.querySelector('span')) el.querySelector('span').textContent = counts[level + 'Count']; });
+    }
+
+    function getProcessId(processData) {
+        if (processData.level === 'L4' && processData.id != null) return 'L4_' + processData.id;
+        return processData.level + '_' + processData.name;
+    }
+    window.getProcessId = getProcessId;
+
+    function switchView(viewName) {
+        currentView = viewName;
+        document.querySelectorAll('header button[id$="-view-btn"]').forEach(btn => {
+            if (btn.id === viewName + '-view-btn') { btn.classList.remove('text-gray-700', 'bg-gray-50', 'hover:bg-gray-50'); btn.classList.add('text-white', 'bg-blue-600', 'hover:bg-blue-700'); }
+            else { btn.classList.remove('text-white', 'bg-blue-600', 'hover:bg-blue-700'); btn.classList.add('text-gray-700', 'bg-gray-50', 'hover:bg-gray-50'); }
+        });
+        document.querySelectorAll('.view-container').forEach(el => el.classList.add('hidden'));
+        const viewEl = document.getElementById(viewName + '-view');
+        if (viewEl) viewEl.classList.remove('hidden');
+
+        const navFuelFilter = document.getElementById('nav-fuel-filter');
+        const treeFuelFilter = document.getElementById('tree-fuel-filter');
+        if (navFuelFilter) navFuelFilter.value = window.currentFuelFilter || 'All';
+        if (treeFuelFilter) treeFuelFilter.value = window.currentFuelFilter || 'All';
+
+        if (viewName === 'navigation' && hierarchyData) { initNavigationView(hierarchyData, window.currentFuelFilter); const fd = filterHierarchy(hierarchyData, window.currentFuelFilter); updateProcessStatistics(fd); }
+        else if (viewName === 'tree' && hierarchyData) { initTreeVisualization(hierarchyData, window.currentFuelFilter); const fd = filterHierarchy(hierarchyData, window.currentFuelFilter); updateProcessStatistics(fd); }
+        else if (viewName === 'search' && typeof initSearchView === 'function' && hierarchyData) initSearchView(hierarchyData);
+    }
+    window.switchView = switchView;
+
+    function getFullPath(processData) {
+        const idx = searchIndex.findIndex(item => item.name === processData.name && item.level === processData.level);
+        if (idx >= 0 && searchIndex[idx].path) return searchIndex[idx].path;
+        return processData.name;
+    }
+
+    function openDetails(processData) {
+        const panel = document.getElementById('details-panel');
+        const content = document.getElementById('details-content');
+        if (!panel || !content) return;
+        const fullPath = getFullPath(processData);
+        let levelClass = 'bg-gray-100 text-gray-800';
+        if (processData.level === 'L1') levelClass = 'bg-blue-100 text-blue-800';
+        else if (processData.level === 'L2') levelClass = 'bg-green-100 text-green-800';
+        else if (processData.level === 'L3') levelClass = 'bg-orange-100 text-orange-800';
+        else if (processData.level === 'L4') levelClass = 'bg-purple-100 text-purple-800';
+
+        let html = '<div class="mb-4"><span class="inline-block px-2 py-1 text-xs font-semibold rounded-full ' + levelClass + '">' + (processData.level || 'Process') + '</span></div><h3 class="text-2xl font-bold text-gray-800 mb-4">' + processData.name + '</h3><div class="space-y-4"><div><h4 class="font-semibold text-gray-700">Full Path</h4><p class="text-gray-600 mt-1">' + fullPath + '</p></div>';
+        if (processData.level === 'L4') html += '<div><h4 class="font-semibold text-gray-700">ID</h4><p class="text-gray-600 mt-1">' + (processData.id != null ? processData.id : 'N/A') + '</p></div><div><h4 class="font-semibold text-gray-700">Fuel Coverage</h4><p class="text-gray-600 mt-1">' + (processData.fuel_coverage || 'Both') + '</p></div>';
+        html += '</div><div class="mt-6 pt-6 border-t border-gray-200"><button onclick="locateProcess(\'' + String(processData.name).replace(/'/g, "\\'") + '\')" class="w-full flex justify-center items-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 min-h-[44px]"><svg class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 21h7a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v11m0 5l4.879-4.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242z" /></svg>Locate in Hierarchy</button></div>';
+
+        content.innerHTML = html;
+        panel.classList.remove('translate-x-full', 'hidden');
+        panel.classList.add('translate-x-0');
+        panel.style.display = 'block';
+    }
+    window.openDetails = openDetails;
+
+    function closeDetails() { const panel = document.getElementById('details-panel'); if (panel) { panel.classList.remove('translate-x-0'); panel.classList.add('translate-x-full'); } }
+
+    window.locateProcess = function(processName) {
+        switchView('tree');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu && !mobileMenu.classList.contains('hidden')) toggleMobileMenu();
+        setTimeout(() => { if (window.focusProcessNode) window.focusProcessNode(processName); }, 200);
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            showLoading();
+            hierarchyData = embeddedHierarchyData;
+            searchIndex = embeddedSearchIndex;
+            updateProcessStatistics(hierarchyData);
+            initNavigationView(hierarchyData, null);
+            switchView('navigation');
+            hideLoading();
+        } catch (error) {
+            console.error('Error loading data:', error);
+            hideLoading();
+            showError('Error loading data.');
+        }
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+    });
+
+    window.showError = showError;
+    window.closeError = closeError;
+    window.filterHierarchyByFuelCoverage = filterHierarchyByFuelCoverage;
+    window.filterHierarchy = filterHierarchy;
+    </script>
+</body>
+</html>
