@@ -1,0 +1,26 @@
+{
+  "name": "hierarchy-2",
+  "version": "1.0.0",
+  "description": "A web-based interactive visualization tool for exploring and validating a 3-level process hierarchy.",
+  "main": "app.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anthonycalabro1/AMIhierarchy3.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anthonycalabro1/AMIhierarchy3/issues"
+  },
+  "homepage": "https://github.com/anthonycalabro1/AMIhierarchy3#readme",
+  "dependencies": {
+    "elkjs": "^0.11.0"
+  }
+}

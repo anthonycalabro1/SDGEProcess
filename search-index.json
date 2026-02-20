@@ -1,0 +1,794 @@
+[
+  {
+    "name": "Enable & Manage AMI Assets",
+    "level": "L1",
+    "path": "Enable & Manage AMI Assets",
+    "parent": ""
+  },
+  {
+    "name": "Device Lifecycle Management",
+    "level": "L2",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management",
+    "parent": "Enable & Manage AMI Assets"
+  },
+  {
+    "name": "Asset & Inventory Management",
+    "level": "L3",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management > Asset & Inventory Management",
+    "parent": "Device Lifecycle Management"
+  },
+  {
+    "name": "Procurement & Receiving",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management > Asset & Inventory Management > Procurement & Receiving",
+    "parent": "Asset & Inventory Management",
+    "id": 1,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Sample and Acceptance Testing",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management > Asset & Inventory Management > Sample and Acceptance Testing",
+    "parent": "Asset & Inventory Management",
+    "id": 2,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Track inventory & reconcile counts",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management > Asset & Inventory Management > Track inventory & reconcile counts",
+    "parent": "Asset & Inventory Management",
+    "id": 3,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Register Devices in Asset Management System and Head End",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management > Asset & Inventory Management > Register Devices in Asset Management System and Head End",
+    "parent": "Asset & Inventory Management",
+    "id": 4,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "RMA Process and Warranty",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management > Asset & Inventory Management > RMA Process and Warranty",
+    "parent": "Asset & Inventory Management",
+    "id": 5,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Installation & Commissioning",
+    "level": "L3",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning",
+    "parent": "Device Lifecycle Management"
+  },
+  {
+    "name": "Customer Notification of install - Install Related(ME&O Plan)",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > Customer Notification of install - Install Related(ME&O Plan)",
+    "parent": "Installation & Commissioning",
+    "id": 6,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Pre-Install Process - Order Creation",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > Pre-Install Process - Order Creation",
+    "parent": "Installation & Commissioning",
+    "id": 7,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "During Install",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > During Install",
+    "parent": "Installation & Commissioning",
+    "id": 8,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Post Install",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > Post Install",
+    "parent": "Installation & Commissioning",
+    "id": 9,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Install Exception Handling - Field",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > Install Exception Handling - Field",
+    "parent": "Installation & Commissioning",
+    "id": 10,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Install Exception Handling - Back-Office",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > Install Exception Handling - Back-Office",
+    "parent": "Installation & Commissioning",
+    "id": 11,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "QA/QC 3rd party installs",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > QA/QC 3rd party installs",
+    "parent": "Installation & Commissioning",
+    "id": 12,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Asset Return, Retire and Warehousing",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Device Lifecycle Management > Installation & Commissioning > Asset Return, Retire and Warehousing",
+    "parent": "Installation & Commissioning",
+    "id": 13,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Network & Communication",
+    "level": "L2",
+    "path": "Enable & Manage AMI Assets > Network & Communication",
+    "parent": "Enable & Manage AMI Assets"
+  },
+  {
+    "name": "Network Management - Cellular",
+    "level": "L3",
+    "path": "Enable & Manage AMI Assets > Network & Communication > Network Management - Cellular",
+    "parent": "Network & Communication"
+  },
+  {
+    "name": "Cellular/SIM Lifecycle - Procurement",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Network & Communication > Network Management - Cellular > Cellular/SIM Lifecycle - Procurement",
+    "parent": "Network Management - Cellular",
+    "id": 14,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Cellular/SIM Lifecycle - Activation/suspend/terminate flows",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Network & Communication > Network Management - Cellular > Cellular/SIM Lifecycle - Activation/suspend/terminate flows",
+    "parent": "Network Management - Cellular",
+    "id": 15,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Cellular/SIM Lifecycle - Carrier Switch",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Network & Communication > Network Management - Cellular > Cellular/SIM Lifecycle - Carrier Switch",
+    "parent": "Network Management - Cellular",
+    "id": 16,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Network Troubleshooting and Vendor Escalation Process",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Network & Communication > Network Management - Cellular > Network Troubleshooting and Vendor Escalation Process",
+    "parent": "Network Management - Cellular",
+    "id": 17,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Network Management - Micro Mesh",
+    "level": "L3",
+    "path": "Enable & Manage AMI Assets > Network & Communication > Network Management - Micro Mesh",
+    "parent": "Network & Communication"
+  },
+  {
+    "name": "Micromesh Needs Assessment and Network Design",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Network & Communication > Network Management - Micro Mesh > Micromesh Needs Assessment and Network Design",
+    "parent": "Network Management - Micro Mesh",
+    "id": 18,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Deployment Process",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Network & Communication > Network Management - Micro Mesh > Deployment Process",
+    "parent": "Network Management - Micro Mesh",
+    "id": 19,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Operate & maintain micromesh infrastructure",
+    "level": "L4",
+    "path": "Enable & Manage AMI Assets > Network & Communication > Network Management - Micro Mesh > Operate & maintain micromesh infrastructure",
+    "parent": "Network Management - Micro Mesh",
+    "id": 20,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Enable Meter to Cash & Customer Engagement",
+    "level": "L1",
+    "path": "Enable Meter to Cash & Customer Engagement",
+    "parent": ""
+  },
+  {
+    "name": "Data Management & Integration",
+    "level": "L2",
+    "path": "Enable Meter to Cash & Customer Engagement > Data Management & Integration",
+    "parent": "Enable Meter to Cash & Customer Engagement"
+  },
+  {
+    "name": "Master Data Synchronization",
+    "level": "L3",
+    "path": "Enable Meter to Cash & Customer Engagement > Data Management & Integration > Master Data Synchronization",
+    "parent": "Data Management & Integration"
+  },
+  {
+    "name": "Data Synchronization (CIS, MDMS and HES)",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Data Management & Integration > Master Data Synchronization > Data Synchronization (CIS, MDMS and HES)",
+    "parent": "Master Data Synchronization",
+    "id": 21,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Data Synchronization Exceptions",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Data Management & Integration > Master Data Synchronization > Data Synchronization Exceptions",
+    "parent": "Master Data Synchronization",
+    "id": 22,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Data Synchronization - Other Systems - GIS, OMS etc.",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Data Management & Integration > Master Data Synchronization > Data Synchronization - Other Systems - GIS, OMS etc.",
+    "parent": "Master Data Synchronization",
+    "id": 23,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Meter Data Collection & Processing",
+    "level": "L3",
+    "path": "Enable Meter to Cash & Customer Engagement > Data Management & Integration > Meter Data Collection & Processing",
+    "parent": "Data Management & Integration"
+  },
+  {
+    "name": "Device Configuration ( Meter Programs)",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Data Management & Integration > Meter Data Collection & Processing > Device Configuration ( Meter Programs)",
+    "parent": "Meter Data Collection & Processing",
+    "id": 24,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Usage Data Collection (Reads and Intervals)",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Data Management & Integration > Meter Data Collection & Processing > Usage Data Collection (Reads and Intervals)",
+    "parent": "Meter Data Collection & Processing",
+    "id": 25,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Non-usage Data Collection (Voltage, Events etc. )",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Data Management & Integration > Meter Data Collection & Processing > Non-usage Data Collection (Voltage, Events etc. )",
+    "parent": "Meter Data Collection & Processing",
+    "id": 26,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "VEE Configuration",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Data Management & Integration > Meter Data Collection & Processing > VEE Configuration",
+    "parent": "Meter Data Collection & Processing",
+    "id": 27,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "VEE Exception Management",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Data Management & Integration > Meter Data Collection & Processing > VEE Exception Management",
+    "parent": "Meter Data Collection & Processing",
+    "id": 28,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Pended Data Processing",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Data Management & Integration > Meter Data Collection & Processing > Pended Data Processing",
+    "parent": "Meter Data Collection & Processing",
+    "id": 29,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Customer & Billing Management",
+    "level": "L2",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer & Billing Management",
+    "parent": "Enable Meter to Cash & Customer Engagement"
+  },
+  {
+    "name": "Billing & Settlement Management",
+    "level": "L3",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Billing & Settlement Management",
+    "parent": "Customer & Billing Management"
+  },
+  {
+    "name": "Simple Billing Rates (Register reads)",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Billing & Settlement Management > Simple Billing Rates (Register reads)",
+    "parent": "Billing & Settlement Management",
+    "id": 30,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Complex Rates (TOU, Demand Rates, Net Billing, Co-incident Demand)",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Billing & Settlement Management > Complex Rates (TOU, Demand Rates, Net Billing, Co-incident Demand)",
+    "parent": "Billing & Settlement Management",
+    "id": 31,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Off cycle Billing - Simple",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Billing & Settlement Management > Off cycle Billing - Simple",
+    "parent": "Billing & Settlement Management",
+    "id": 32,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Off cycle Billing - Complex",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Billing & Settlement Management > Off cycle Billing - Complex",
+    "parent": "Billing & Settlement Management",
+    "id": 33,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Billing Exception Resolution (All Rates)",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Billing & Settlement Management > Billing Exception Resolution (All Rates)",
+    "parent": "Billing & Settlement Management",
+    "id": 34,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Wholesale Settlement",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Billing & Settlement Management > Wholesale Settlement",
+    "parent": "Billing & Settlement Management",
+    "id": 35,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Specialized Billing",
+    "level": "L3",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Specialized Billing",
+    "parent": "Customer & Billing Management"
+  },
+  {
+    "name": "Event based billing",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Specialized Billing > Event based billing",
+    "parent": "Specialized Billing",
+    "id": 36,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Totalized Metering",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Specialized Billing > Totalized Metering",
+    "parent": "Specialized Billing",
+    "id": 37,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Virtual Totalized Metering",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer & Billing Management > Specialized Billing > Virtual Totalized Metering",
+    "parent": "Specialized Billing",
+    "id": 38,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Customer Management",
+    "level": "L2",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer Management",
+    "parent": "Enable Meter to Cash & Customer Engagement"
+  },
+  {
+    "name": "Customer Engagement",
+    "level": "L3",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer Management > Customer Engagement",
+    "parent": "Customer Management"
+  },
+  {
+    "name": "Opt-Out Management (Existing, Pre install, During Install, Post Install)",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer Management > Customer Engagement > Opt-Out Management (Existing, Pre install, During Install, Post Install)",
+    "parent": "Customer Engagement",
+    "id": 39,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Customer Portal (Usage Data)",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer Management > Customer Engagement > Customer Portal (Usage Data)",
+    "parent": "Customer Engagement",
+    "id": 40,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "3rd Party data Access",
+    "level": "L4",
+    "path": "Enable Meter to Cash & Customer Engagement > Customer Management > Customer Engagement > 3rd Party data Access",
+    "parent": "Customer Engagement",
+    "id": 41,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Manage AMI Data & Operations",
+    "level": "L1",
+    "path": "Manage AMI Data & Operations",
+    "parent": ""
+  },
+  {
+    "name": "Data Management & Integration",
+    "level": "L2",
+    "path": "Manage AMI Data & Operations > Data Management & Integration",
+    "parent": "Manage AMI Data & Operations"
+  },
+  {
+    "name": "AMI Existing Capabilities/Integrations",
+    "level": "L3",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations",
+    "parent": "Data Management & Integration"
+  },
+  {
+    "name": "NMS Integration - Outage Events, Power Status Checks",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations > NMS Integration - Outage Events, Power Status Checks",
+    "parent": "AMI Existing Capabilities/Integrations",
+    "id": 42,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "DataMart / Data Lake integration",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations > DataMart / Data Lake integration",
+    "parent": "AMI Existing Capabilities/Integrations",
+    "id": 43,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Revenue Protection Management - Theft and Tamper Alerts Management",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations > Revenue Protection Management - Theft and Tamper Alerts Management",
+    "parent": "AMI Existing Capabilities/Integrations",
+    "id": 44,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "DERMS Programs Enrollment and Re-conciliation",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations > DERMS Programs Enrollment and Re-conciliation",
+    "parent": "AMI Existing Capabilities/Integrations",
+    "id": 45,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Rate Compare Tool Update",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations > Rate Compare Tool Update",
+    "parent": "AMI Existing Capabilities/Integrations",
+    "id": 46,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "AMI Event Analysis and Response",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations > AMI Event Analysis and Response",
+    "parent": "AMI Existing Capabilities/Integrations",
+    "id": 47,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Load Forecasting",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > AMI Existing Capabilities/Integrations > Load Forecasting",
+    "parent": "AMI Existing Capabilities/Integrations",
+    "id": 48,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Interim Parallel Processing",
+    "level": "L3",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > Interim Parallel Processing",
+    "parent": "Data Management & Integration"
+  },
+  {
+    "name": "Billing Operations",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > Interim Parallel Processing > Billing Operations",
+    "parent": "Interim Parallel Processing",
+    "id": 49,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Data Sync",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > Interim Parallel Processing > Data Sync",
+    "parent": "Interim Parallel Processing",
+    "id": 50,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "RCD Processing",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > Interim Parallel Processing > RCD Processing",
+    "parent": "Interim Parallel Processing",
+    "id": 51,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "NMS Integration - Meter Pings, Outage Events",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > Interim Parallel Processing > NMS Integration - Meter Pings, Outage Events",
+    "parent": "Interim Parallel Processing",
+    "id": 52,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Reporting, Data Quality & Governance",
+    "level": "L3",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > Reporting, Data Quality & Governance",
+    "parent": "Data Management & Integration"
+  },
+  {
+    "name": "Program Reporting Needs - Deployment volume, Exceptions, Saturation etc.",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > Reporting, Data Quality & Governance > Program Reporting Needs - Deployment volume, Exceptions, Saturation etc.",
+    "parent": "Reporting, Data Quality & Governance",
+    "id": 53,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "BAU Reporting Needs - Read Rates, Transaction success, Events etc.",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > Reporting, Data Quality & Governance > BAU Reporting Needs - Read Rates, Transaction success, Events etc.",
+    "parent": "Reporting, Data Quality & Governance",
+    "id": 54,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Cross System Anomalies",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > Reporting, Data Quality & Governance > Cross System Anomalies",
+    "parent": "Reporting, Data Quality & Governance",
+    "id": 55,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Supplier Data Requirements",
+    "level": "L3",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > Supplier Data Requirements",
+    "parent": "Data Management & Integration"
+  },
+  {
+    "name": "CCA Integration",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Data Management & Integration > Supplier Data Requirements > CCA Integration",
+    "parent": "Supplier Data Requirements",
+    "id": 56,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Meter Maintenance and Field operations",
+    "level": "L2",
+    "path": "Manage AMI Data & Operations > Meter Maintenance and Field operations",
+    "parent": "Manage AMI Data & Operations"
+  },
+  {
+    "name": "Meter Operations and Diagnostics",
+    "level": "L3",
+    "path": "Manage AMI Data & Operations > Meter Maintenance and Field operations > Meter Operations and Diagnostics",
+    "parent": "Meter Maintenance and Field operations"
+  },
+  {
+    "name": "Remote Firmware Update",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Meter Maintenance and Field operations > Meter Operations and Diagnostics > Remote Firmware Update",
+    "parent": "Meter Operations and Diagnostics",
+    "id": 57,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Manage Meter Configurations",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Meter Maintenance and Field operations > Meter Operations and Diagnostics > Manage Meter Configurations",
+    "parent": "Meter Operations and Diagnostics",
+    "id": 58,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Manage Security certificates",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Meter Maintenance and Field operations > Meter Operations and Diagnostics > Manage Security certificates",
+    "parent": "Meter Operations and Diagnostics",
+    "id": 59,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Time Sync/Meter Clock Management",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Meter Maintenance and Field operations > Meter Operations and Diagnostics > Time Sync/Meter Clock Management",
+    "parent": "Meter Operations and Diagnostics",
+    "id": 60,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Device Data Wipe Procedure",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Meter Maintenance and Field operations > Meter Operations and Diagnostics > Device Data Wipe Procedure",
+    "parent": "Meter Operations and Diagnostics",
+    "id": 61,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Remote Diagnostics",
+    "level": "L4",
+    "path": "Manage AMI Data & Operations > Meter Maintenance and Field operations > Meter Operations and Diagnostics > Remote Diagnostics",
+    "parent": "Meter Operations and Diagnostics",
+    "id": 62,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Manage AMI transaction & Field Enablement",
+    "level": "L1",
+    "path": "Manage AMI transaction & Field Enablement",
+    "parent": ""
+  },
+  {
+    "name": "Meter Maintenance and Field operations",
+    "level": "L2",
+    "path": "Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations",
+    "parent": "Manage AMI transaction & Field Enablement"
+  },
+  {
+    "name": "Meter /Module Field Operations (BAU)",
+    "level": "L3",
+    "path": "Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU)",
+    "parent": "Meter Maintenance and Field operations"
+  },
+  {
+    "name": "New Install",
+    "level": "L4",
+    "path": "Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU) > New Install",
+    "parent": "Meter /Module Field Operations (BAU)",
+    "id": 63,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "Meter Exchange",
+    "level": "L4",
+    "path": "Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU) > Meter Exchange",
+    "parent": "Meter /Module Field Operations (BAU)",
+    "id": 64,
+    "fuel_coverage": "Both"
+  },
+  {
+    "name": "RCD - Move in /Move outs",
+    "level": "L4",
+    "path": "Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU) > RCD - Move in /Move outs",
+    "parent": "Meter /Module Field Operations (BAU)",
+    "id": 65,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "RCD - Collection Process",
+    "level": "L4",
+    "path": "Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU) > RCD - Collection Process",
+    "parent": "Meter /Module Field Operations (BAU)",
+    "id": 66,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "RCD - Emergency",
+    "level": "L4",
+    "path": "Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU) > RCD - Emergency",
+    "parent": "Meter /Module Field Operations (BAU)",
+    "id": 67,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Field Investigations",
+    "level": "L4",
+    "path": "Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU) > Field Investigations",
+    "parent": "Meter /Module Field Operations (BAU)",
+    "id": 68,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Meter Sample Testing",
+    "level": "L4",
+    "path": "Manage AMI transaction & Field Enablement > Meter Maintenance and Field operations > Meter /Module Field Operations (BAU) > Meter Sample Testing",
+    "parent": "Meter /Module Field Operations (BAU)",
+    "id": 69,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Optimize the Grid & Innovate",
+    "level": "L1",
+    "path": "Optimize the Grid & Innovate",
+    "parent": ""
+  },
+  {
+    "name": "Advanced Capabilities - Customer",
+    "level": "L2",
+    "path": "Optimize the Grid & Innovate > Advanced Capabilities - Customer",
+    "parent": "Optimize the Grid & Innovate"
+  },
+  {
+    "name": "NextGen Capabilities - Customer",
+    "level": "L3",
+    "path": "Optimize the Grid & Innovate > Advanced Capabilities - Customer > NextGen Capabilities - Customer",
+    "parent": "Advanced Capabilities - Customer"
+  },
+  {
+    "name": "DI App Management",
+    "level": "L4",
+    "path": "Optimize the Grid & Innovate > Advanced Capabilities - Customer > NextGen Capabilities - Customer > DI App Management",
+    "parent": "NextGen Capabilities - Customer",
+    "id": 70,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Load Disaggregation Enrollment & Provisioning",
+    "level": "L4",
+    "path": "Optimize the Grid & Innovate > Advanced Capabilities - Customer > NextGen Capabilities - Customer > Load Disaggregation Enrollment & Provisioning",
+    "parent": "NextGen Capabilities - Customer",
+    "id": 71,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Load Disaggregation Enablement",
+    "level": "L4",
+    "path": "Optimize the Grid & Innovate > Advanced Capabilities - Customer > NextGen Capabilities - Customer > Load Disaggregation Enablement",
+    "parent": "NextGen Capabilities - Customer",
+    "id": 72,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Advanced Capabilities - Grid",
+    "level": "L2",
+    "path": "Optimize the Grid & Innovate > Advanced Capabilities - Grid",
+    "parent": "Optimize the Grid & Innovate"
+  },
+  {
+    "name": "NextGen Capabilities - Grid Operations",
+    "level": "L3",
+    "path": "Optimize the Grid & Innovate > Advanced Capabilities - Grid > NextGen Capabilities - Grid Operations",
+    "parent": "Advanced Capabilities - Grid"
+  },
+  {
+    "name": "Transformer Load Management - Phase Identification",
+    "level": "L4",
+    "path": "Optimize the Grid & Innovate > Advanced Capabilities - Grid > NextGen Capabilities - Grid Operations > Transformer Load Management - Phase Identification",
+    "parent": "NextGen Capabilities - Grid Operations",
+    "id": 73,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Transformer Load Management - Transformer to Meter Mapping",
+    "level": "L4",
+    "path": "Optimize the Grid & Innovate > Advanced Capabilities - Grid > NextGen Capabilities - Grid Operations > Transformer Load Management - Transformer to Meter Mapping",
+    "parent": "NextGen Capabilities - Grid Operations",
+    "id": 74,
+    "fuel_coverage": "Electric"
+  },
+  {
+    "name": "Transformer Load Management - Transformer Load Management",
+    "level": "L4",
+    "path": "Optimize the Grid & Innovate > Advanced Capabilities - Grid > NextGen Capabilities - Grid Operations > Transformer Load Management - Transformer Load Management",
+    "parent": "NextGen Capabilities - Grid Operations",
+    "id": 75,
+    "fuel_coverage": "Electric"
+  }
+]

@@ -1,0 +1,647 @@
+{
+  "name": "Process Hierarchy",
+  "children": [
+    {
+      "name": "Enable & Manage AMI Assets",
+      "level": "L1",
+      "children": [
+        {
+          "name": "Device Lifecycle Management",
+          "level": "L2",
+          "children": [
+            {
+              "name": "Asset & Inventory Management",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "Procurement & Receiving",
+                  "level": "L4",
+                  "id": 1,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Sample and Acceptance Testing",
+                  "level": "L4",
+                  "id": 2,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Track inventory & reconcile counts",
+                  "level": "L4",
+                  "id": 3,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Register Devices in Asset Management System and Head End",
+                  "level": "L4",
+                  "id": 4,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "RMA Process and Warranty",
+                  "level": "L4",
+                  "id": 5,
+                  "fuel_coverage": "Both"
+                }
+              ]
+            },
+            {
+              "name": "Installation & Commissioning",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "Customer Notification of install - Install Related(ME&O Plan)",
+                  "level": "L4",
+                  "id": 6,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Pre-Install Process - Order Creation",
+                  "level": "L4",
+                  "id": 7,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "During Install",
+                  "level": "L4",
+                  "id": 8,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Post Install",
+                  "level": "L4",
+                  "id": 9,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Install Exception Handling - Field",
+                  "level": "L4",
+                  "id": 10,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Install Exception Handling - Back-Office",
+                  "level": "L4",
+                  "id": 11,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "QA/QC 3rd party installs",
+                  "level": "L4",
+                  "id": 12,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Asset Return, Retire and Warehousing",
+                  "level": "L4",
+                  "id": 13,
+                  "fuel_coverage": "Both"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Network & Communication",
+          "level": "L2",
+          "children": [
+            {
+              "name": "Network Management - Cellular",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "Cellular/SIM Lifecycle - Procurement",
+                  "level": "L4",
+                  "id": 14,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Cellular/SIM Lifecycle - Activation/suspend/terminate flows",
+                  "level": "L4",
+                  "id": 15,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Cellular/SIM Lifecycle - Carrier Switch",
+                  "level": "L4",
+                  "id": 16,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Network Troubleshooting and Vendor Escalation Process",
+                  "level": "L4",
+                  "id": 17,
+                  "fuel_coverage": "Both"
+                }
+              ]
+            },
+            {
+              "name": "Network Management - Micro Mesh",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "Micromesh Needs Assessment and Network Design",
+                  "level": "L4",
+                  "id": 18,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Deployment Process",
+                  "level": "L4",
+                  "id": 19,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Operate & maintain micromesh infrastructure",
+                  "level": "L4",
+                  "id": 20,
+                  "fuel_coverage": "Both"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Enable Meter to Cash & Customer Engagement",
+      "level": "L1",
+      "children": [
+        {
+          "name": "Data Management & Integration",
+          "level": "L2",
+          "children": [
+            {
+              "name": "Master Data Synchronization",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "Data Synchronization (CIS, MDMS and HES)",
+                  "level": "L4",
+                  "id": 21,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Data Synchronization Exceptions",
+                  "level": "L4",
+                  "id": 22,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Data Synchronization - Other Systems - GIS, OMS etc.",
+                  "level": "L4",
+                  "id": 23,
+                  "fuel_coverage": "Both"
+                }
+              ]
+            },
+            {
+              "name": "Meter Data Collection & Processing",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "Device Configuration ( Meter Programs)",
+                  "level": "L4",
+                  "id": 24,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Usage Data Collection (Reads and Intervals)",
+                  "level": "L4",
+                  "id": 25,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Non-usage Data Collection (Voltage, Events etc. )",
+                  "level": "L4",
+                  "id": 26,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "VEE Configuration",
+                  "level": "L4",
+                  "id": 27,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "VEE Exception Management",
+                  "level": "L4",
+                  "id": 28,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Pended Data Processing",
+                  "level": "L4",
+                  "id": 29,
+                  "fuel_coverage": "Both"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Customer & Billing Management",
+          "level": "L2",
+          "children": [
+            {
+              "name": "Billing & Settlement Management",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "Simple Billing Rates (Register reads)",
+                  "level": "L4",
+                  "id": 30,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Complex Rates (TOU, Demand Rates, Net Billing, Co-incident Demand)",
+                  "level": "L4",
+                  "id": 31,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "Off cycle Billing - Simple",
+                  "level": "L4",
+                  "id": 32,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Off cycle Billing - Complex",
+                  "level": "L4",
+                  "id": 33,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "Billing Exception Resolution (All Rates)",
+                  "level": "L4",
+                  "id": 34,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Wholesale Settlement",
+                  "level": "L4",
+                  "id": 35,
+                  "fuel_coverage": "Both"
+                }
+              ]
+            },
+            {
+              "name": "Specialized Billing",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "Event based billing",
+                  "level": "L4",
+                  "id": 36,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "Totalized Metering",
+                  "level": "L4",
+                  "id": 37,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "Virtual Totalized Metering",
+                  "level": "L4",
+                  "id": 38,
+                  "fuel_coverage": "Electric"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Customer Management",
+          "level": "L2",
+          "children": [
+            {
+              "name": "Customer Engagement",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "Opt-Out Management (Existing, Pre install, During Install, Post Install)",
+                  "level": "L4",
+                  "id": 39,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Customer Portal (Usage Data)",
+                  "level": "L4",
+                  "id": 40,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "3rd Party data Access",
+                  "level": "L4",
+                  "id": 41,
+                  "fuel_coverage": "Both"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Manage AMI Data & Operations",
+      "level": "L1",
+      "children": [
+        {
+          "name": "Data Management & Integration",
+          "level": "L2",
+          "children": [
+            {
+              "name": "AMI Existing Capabilities/Integrations",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "NMS Integration - Outage Events, Power Status Checks",
+                  "level": "L4",
+                  "id": 42,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "DataMart / Data Lake integration",
+                  "level": "L4",
+                  "id": 43,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Revenue Protection Management - Theft and Tamper Alerts Management",
+                  "level": "L4",
+                  "id": 44,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "DERMS Programs Enrollment and Re-conciliation",
+                  "level": "L4",
+                  "id": 45,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "Rate Compare Tool Update",
+                  "level": "L4",
+                  "id": 46,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "AMI Event Analysis and Response",
+                  "level": "L4",
+                  "id": 47,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "Load Forecasting",
+                  "level": "L4",
+                  "id": 48,
+                  "fuel_coverage": "Both"
+                }
+              ]
+            },
+            {
+              "name": "Interim Parallel Processing",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "Billing Operations",
+                  "level": "L4",
+                  "id": 49,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Data Sync",
+                  "level": "L4",
+                  "id": 50,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "RCD Processing",
+                  "level": "L4",
+                  "id": 51,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "NMS Integration - Meter Pings, Outage Events",
+                  "level": "L4",
+                  "id": 52,
+                  "fuel_coverage": "Electric"
+                }
+              ]
+            },
+            {
+              "name": "Reporting, Data Quality & Governance",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "Program Reporting Needs - Deployment volume, Exceptions, Saturation etc.",
+                  "level": "L4",
+                  "id": 53,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "BAU Reporting Needs - Read Rates, Transaction success, Events etc.",
+                  "level": "L4",
+                  "id": 54,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Cross System Anomalies",
+                  "level": "L4",
+                  "id": 55,
+                  "fuel_coverage": "Both"
+                }
+              ]
+            },
+            {
+              "name": "Supplier Data Requirements",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "CCA Integration",
+                  "level": "L4",
+                  "id": 56,
+                  "fuel_coverage": "Both"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Meter Maintenance and Field operations",
+          "level": "L2",
+          "children": [
+            {
+              "name": "Meter Operations and Diagnostics",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "Remote Firmware Update",
+                  "level": "L4",
+                  "id": 57,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Manage Meter Configurations",
+                  "level": "L4",
+                  "id": 58,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "Manage Security certificates",
+                  "level": "L4",
+                  "id": 59,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Time Sync/Meter Clock Management",
+                  "level": "L4",
+                  "id": 60,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Device Data Wipe Procedure",
+                  "level": "L4",
+                  "id": 61,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Remote Diagnostics",
+                  "level": "L4",
+                  "id": 62,
+                  "fuel_coverage": "Both"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Manage AMI transaction & Field Enablement",
+      "level": "L1",
+      "children": [
+        {
+          "name": "Meter Maintenance and Field operations",
+          "level": "L2",
+          "children": [
+            {
+              "name": "Meter /Module Field Operations (BAU)",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "New Install",
+                  "level": "L4",
+                  "id": 63,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "Meter Exchange",
+                  "level": "L4",
+                  "id": 64,
+                  "fuel_coverage": "Both"
+                },
+                {
+                  "name": "RCD - Move in /Move outs",
+                  "level": "L4",
+                  "id": 65,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "RCD - Collection Process",
+                  "level": "L4",
+                  "id": 66,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "RCD - Emergency",
+                  "level": "L4",
+                  "id": 67,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "Field Investigations",
+                  "level": "L4",
+                  "id": 68,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "Meter Sample Testing",
+                  "level": "L4",
+                  "id": 69,
+                  "fuel_coverage": "Electric"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Optimize the Grid & Innovate",
+      "level": "L1",
+      "children": [
+        {
+          "name": "Advanced Capabilities - Customer",
+          "level": "L2",
+          "children": [
+            {
+              "name": "NextGen Capabilities - Customer",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "DI App Management",
+                  "level": "L4",
+                  "id": 70,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "Load Disaggregation Enrollment & Provisioning",
+                  "level": "L4",
+                  "id": 71,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "Load Disaggregation Enablement",
+                  "level": "L4",
+                  "id": 72,
+                  "fuel_coverage": "Electric"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Advanced Capabilities - Grid",
+          "level": "L2",
+          "children": [
+            {
+              "name": "NextGen Capabilities - Grid Operations",
+              "level": "L3",
+              "children": [
+                {
+                  "name": "Transformer Load Management - Phase Identification",
+                  "level": "L4",
+                  "id": 73,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "Transformer Load Management - Transformer to Meter Mapping",
+                  "level": "L4",
+                  "id": 74,
+                  "fuel_coverage": "Electric"
+                },
+                {
+                  "name": "Transformer Load Management - Transformer Load Management",
+                  "level": "L4",
+                  "id": 75,
+                  "fuel_coverage": "Electric"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

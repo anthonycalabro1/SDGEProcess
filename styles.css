@@ -1,0 +1,115 @@
+/* D3 Tree Visualization Styles */
+.node circle {
+    fill: #fff;
+    stroke: steelblue;
+    stroke-width: 3px;
+    cursor: pointer;
+}
+
+.node text {
+    font: 12px sans-serif;
+}
+
+.link {
+    fill: none;
+    stroke: #ccc;
+    stroke-width: 2px;
+}
+
+/* Transition classes for details panel */
+.translate-x-full {
+    transform: translateX(100%);
+}
+
+.translate-x-0 {
+    transform: translateX(0);
+}
+
+/* Custom scrollbar for better look */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1; 
+}
+ 
+::-webkit-scrollbar-thumb {
+    background: #888; 
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555; 
+}
+
+/* Screen reader only class */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+.sr-only:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #details-panel {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .view-container {
+        padding: 1rem;
+    }
+}
+
+/* Ensure minimum touch target sizes */
+button, a, input[type="button"], input[type="submit"] {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* Focus visible for better accessibility */
+*:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Change indicators */
+.process-modified {
+    border-left-width: 4px;
+    border-left-color: #f59e0b;
+    background-color: #fef3c7;
+}
+
+.process-added {
+    border-left-width: 4px;
+    border-left-color: #10b981;
+    background-color: #d1fae5;
+}
+
+.process-deleted {
+    opacity: 0.5;
+    text-decoration: line-through;
+    background-color: #fee2e2;
+    border-left-width: 4px;
+    border-left-color: #ef4444;
+}
+
